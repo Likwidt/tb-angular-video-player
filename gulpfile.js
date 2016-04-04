@@ -6,7 +6,7 @@ var open = require('gulp-open');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var inject = require('gulp-inject');
-var jslint = require('gulp-jslint');
+var jshint = require('gulp-jshint');
 var clean = require('gulp-clean');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -60,6 +60,13 @@ gulp.task('inject', function () {
             ))      
           .pipe(inject(gulp.src(sources.css)))
           .pipe(gulp.dest(''));
+});
+
+gulp.task('jshint', function () {
+    return gulp.src(sources.js)
+      .pipe(jshint())
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('watch', function () {

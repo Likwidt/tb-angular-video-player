@@ -1,0 +1,15 @@
+<div class="video-controls">
+	<div class="controls">
+		<div class="back30"></div>
+		<div class="playPause" ng-class="{ 'play': !!isPlaying, 'pause': !isPlaying }"></div>
+		<div class="fw30"></div>
+		<div class="progressIndicator">
+			<div class="timeIn">{{ timeIn }}</div>
+			<div class="slider">
+				<img src="img/slider.png" />
+				<div class="node"></div>
+			</div>
+			<div class="timeLeft">{{ timeLeft }}</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,13 @@
+<div class="video-container" ng-cloak>
+	<div class="video-title">
+		<img ng-src="img/video-title-{{ video.data.keyword }}.png" />
+	</div>
+	<div class="video-slide-thumb">
+		<img ng-src="{{ getAppropriateImage() }}" />
+	</div>
+	<video-controls></video-controls>
+	<video data-name="{{ video.data.keyword | trustUrl }}" autoplay>
+		<!--source ng-src="{{ video.data.entry.nativeURL | trustUrl }}" type="video/mp4" -->
+		<source src="https://sta.thierryblais.com/Hypertension/Intro.mp4" type="video/mp4">
+	</video>
+</div>

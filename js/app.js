@@ -1,6 +1,6 @@
-"use strict";
-
 (function(){
+	"use strict";
+	
 	function appConfig( $compileProvider, $stateProvider, $urlRouterProvider ){
 
 		// Un comment if you need to include link to mail, skype, phone or other
