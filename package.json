@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "0.0.1",
+  "devDependencies": {
+    "angular-mocks": "^1.5.2",
+    "gulp": "^3.9.1",
+    "gulp-angular-filesort": "^1.1.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-clean-css": "^2.0.3",
+    "gulp-concat": "^2.6.0",
+    "gulp-connect": "^3.1.0",
+    "gulp-inject": "^4.0.0",
+    "gulp-jslint": "^0.2.2",
+    "gulp-open": "^1.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-jasmine": "^0.3.8",
+    "karma-spec-reporter": "0.0.24",
+    "run-sequence": "^1.1.5"
+  }
+}
