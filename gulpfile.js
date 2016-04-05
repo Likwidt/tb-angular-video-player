@@ -69,8 +69,16 @@ gulp.task('jshint', function () {
       .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watch', function () {
-  gulp.watch(sources.html.concat(sources.js), ['html']);
+gulp.task('watch', ['watch-html', 'watch-sass', 'watch-js']);
+
+gulp.task('watch-html', function () {
+  return gulp.watch(sources.html, ['html']);
+});
+gulp.task('watch-sass', function () {
+  return gulp.watch(sources.sass, ['sass', 'inject', 'html']);
+});
+gulp.task('watch-js', function () {
+  return gulp.watch(sources.js, ['inject', 'html']);
 });
 
 gulp.task('clean-dist', function() {
