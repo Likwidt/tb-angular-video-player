@@ -20,13 +20,11 @@
 		return n;
 	}
 
-	function parseTime( t ){
-		var output,
-			minutes = Math.floor(t/60),
-			seconds = pad2(Math.ceil(t%60));
+	function parseTime(t, round){
+		var minutes = Math.floor(t/60),
+			seconds = round != 'up' ? pad2(Math.floor(t%60)) : pad2(Math.ceil(t%60));
 
-		output = [minutes, ':', seconds].join('');
-		return output;
+		return [minutes, ':', seconds].join('');
 	}
 
 	function tbVideoPlayer($state) {
@@ -35,27 +33,27 @@
 			replace: true,
 			templateUrl: 'views/videoPlayer.html',
 			link: function($scope, $element) {
-				$scope.elems = {};
-				$scope.elems.container = $element[0];
-				$scope.elems.video = $scope.elems.container.querySelector('video');
-				//$scope.elems.videoTitle = $scope.elems.container.querySelector('.video-title');
-				$scope.elems.vidHeight = 539.5;
-				$scope.elems.videoName = $scope.elems.video.getAttribute('data-name');
+				var DOM = {};
+				DOM.container = $element[0];
+				DOM.video =  DOM.container.querySelector('video');
+
+				$scope.video = DOM.video;
+
+				//DOM.videoTitle = $scope.elems.container.querySelector('.video-title');
+				//$scope.elems.vidHeight = 539.5;
+				//DOM.videoName = DOM.video.getAttribute('data-name');
 				//$scope.elems.thumb = $scope.elems.container.querySelector('.video-slide-thumb');
 				//$scope.elems.slideImage = $scope.elems.thumb.querySelector('img');
 				//$scope.elems.slideImageSrc = null;
 				//$scope.getAppropriateImage = getAppropriateImage;
-
-				$scope.timeIn = '0:00';
-				$scope.timeLeft = '0:00';
 				//$scope.thumbExpanded = false;
 
 
-				//$scope.elems.video.addEventListener('timeupdate', slideShow, false);
-				$scope.elems.video.addEventListener('canplay', initThumb, false);
-				//$scope.elems.video.addEventListener('ended', backToProgram, false);
+				//DOM.video.addEventListener('timeupdate', slideShow, false);
+				DOM.video.addEventListener('canplay', initThumb, false);
+				//DOM.video.addEventListener('ended', backToProgram, false);
 
-				function getAppropriateImage() {
+				/*function getAppropriateImage() {
 					var size = !!$scope.thumbExpanded ? 'lg/' : 'sm/';
 					if ($scope.elems.slideImageSrc !== null) {
 						return ['img/slides/', size, $scope.elems.slideImageSrc].join('');
@@ -63,19 +61,19 @@
 						return null;
 					}
 					
-				}
+				}*/
 
 				function initThumb(){
 
 					$scope.$apply(function() {
-						$scope.isPlaying = !$scope.elems.video.paused;
+						$scope.isPlaying = !DOM.video.paused;
 					});
 
 					/*if (!!$scope.video.data.timeIndexes.length && $scope.elems.thumb.initStarted !== true){
 						$scope.elems.thumb.addEventListener('touchstart', toggleClone, false);			
 					}*/
 
-					$scope.elems.video.removeAttribute("controls");
+					DOM.video.removeAttribute("controls");
 
 					//$scope.elems.thumb['initStarted'] = true;
 				}
@@ -100,8 +98,8 @@
 				}*/
 
 				/*function slideShow( e ){		
-					var ct = Math.ceil($scope.elems.video.currentTime),
-						duration = Math.ceil($scope.elems.video.duration),
+					var ct = Math.ceil(DOM.video.currentTime),
+						duration = Math.ceil(DOM.video.duration),
 						ti = parseTime(ct),
 						tl = parseTime(duration - ct),
 						found = !$scope.video.data.timeIndexes.length,
@@ -164,100 +162,128 @@
 			replace: true,
 			templateUrl: 'views/videoControls.html',
 			link: function($scope, $element) {	
-				var tempVideoTime;
+				var DOM = {};
+				var OPTIONS = {};
+				
+				DOM.controls = $element[0];
+				DOM.forwardButton = DOM.controls.querySelector('.fw30');
+				DOM.backButton = DOM.controls.querySelector('.back30');
+				DOM.slider = DOM.controls.querySelector('.slider > img');
+				DOM.node = DOM.controls.querySelector('.node');
+				DOM.playPause = DOM.controls.querySelector('.playPause');
+				DOM.timeIn = DOM.controls.querySelector('.timeIn');
+				DOM.timeLeft = DOM.controls.querySelector('.timeLeft');
+				DOM.video = $scope.video;
+				
+				OPTIONS.skipTime = 30;
 
-				$scope.elems.controls = $element[0];
-				$scope.elems.slider = $scope.elems.controls.querySelector('.slider > img');
-				$scope.elems.node = $scope.elems.controls.querySelector('.node');
-				$scope.elems.playPause = $scope.elems.controls.querySelector('.playPause');
-				$scope.elems.fw = $scope.elems.controls.querySelector('.fw30');
-				$scope.elems.bk = $scope.elems.controls.querySelector('.back30');
-				$scope.elems.timeIn = $scope.elems.controls.querySelector('.timeIn');
-				$scope.elems.timeLeft = $scope.elems.controls.querySelector('.timeLeft');
-				$scope.skipTime = 30;
-				$scope.isPlaying;
+				$scope.STATES = {};
+				$scope.STATES.isPlaying = false;
+				$scope.STATES.timeIn;
+				$scope.STATES.timeLeft;
+
+				DOM.video.addEventListener('canplay', updateTimeCounters, false);
+				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
+
+				function updateTimeCounters(e) {
+					var video = e.target;
+					var currentTime = video.currentTime;
+					var timeLeft = video.duration - currentTime;
+
+					$scope.$apply(function() {
+
+						// init time counters
+						$scope.STATES.timeIn = parseTime(currentTime, 'up');
+						$scope.STATES.timeLeft = parseTime(timeLeft, 'down');			
+					});
+				}
 
 
-				$scope.elems.fw.addEventListener('touchstart', fw30, false);
-				$scope.elems.bk.addEventListener('touchstart', back30, false);
-				$scope.elems.playPause.addEventListener('touchstart', playButtonHandler, false);
 
-				$scope.elems.node.addEventListener('touchstart', bindSliderNode, false);
+
+							var tempVideoTime;
+
+
+				DOM.forwardButton.addEventListener('touchstart', fw30, false);
+				DOM.backButton.addEventListener('touchstart', back30, false);
+				DOM.playPause.addEventListener('touchstart', playButtonHandler, false);
+
+				DOM.node.addEventListener('touchstart', bindSliderNode, false);
 
 
 				function bindSliderNode(e) {
 					e.stopPropagation();
-					$scope.elems.node['isBeingMovedByUser'] = true;
-					$scope.elems.node.addEventListener('touchmove', sliderMove, false);
-					$scope.elems.node.addEventListener('touchend', unbindSliderNode, false);
+					DOM.node['isBeingMovedByUser'] = true;
+					DOM.node.addEventListener('touchmove', sliderMove, false);
+					DOM.node.addEventListener('touchend', unbindSliderNode, false);
 
 				}
 
 				function unbindSliderNode(e) {
 					e.stopPropagation();
-					$scope.elems.node['isBeingMovedByUser'] = false;
+					DOM.node['isBeingMovedByUser'] = false;
 
-					$scope.elems.video.currentTime = tempVideoTime;
+					DOM.video.currentTime = tempVideoTime;
 
-					$scope.elems.node.removeEventListener('touchmove', sliderMove, false);
-					$scope.elems.node.removeEventListener('touchend', unbindSliderNode, false);
+					DOM.node.removeEventListener('touchmove', sliderMove, false);
+					DOM.node.removeEventListener('touchend', unbindSliderNode, false);
 				}
 
 				function sliderMove (e) {
 					e.stopPropagation();
 					var touch = e.touches[0];
-					var duration = Math.ceil($scope.elems.video.duration);
-					var sliderBounds = $scope.elems.slider.getBoundingClientRect();
+					var duration = Math.ceil(DOM.video.duration);
+					var sliderBounds = DOM.slider.getBoundingClientRect();
 					var movePosition = touch.pageX;
 					var diff = movePosition - sliderBounds.left;
 
 
 
 					if (diff <= 0) { //too left
-						$scope.elems.node.style.left = [0, 'px'].join('');
+						DOM.node.style.left = [0, 'px'].join('');
 						tempVideoTime = 0;
 					} else if (diff >= sliderBounds.width) { // too right
-						$scope.elems.node.style.left = [sliderBounds.width, 'px'].join('');
+						DOM.node.style.left = [sliderBounds.width, 'px'].join('');
 						tempVideoTime = duration;
 					} else { // ok
-						$scope.elems.node.style.left = [diff, 'px'].join('');
+						DOM.node.style.left = [diff, 'px'].join('');
 						tempVideoTime = (duration * diff) / sliderBounds.width;
 					}
 
 					$scope.$apply(function() {
-						$scope.timeIn = parseTime(tempVideoTime);
-						$scope.timeLeft = parseTime(duration - tempVideoTime);
+						$scope.STATES.timeIn = parseTime(tempVideoTime);
+						$scope.STATES.timeLeft = parseTime(duration - tempVideoTime);
 					});
 
 				}
 
 				function back30(){
-					var goBack = ($scope.elems.video.currentTime >= $scope.skipTime);
+					var goBack = (DOM.video.currentTime >= OPTIONS.skipTime);
 
-					$scope.elems.video.currentTime = goBack ? ($scope.elems.video.currentTime - $scope.skipTime) : 0;
+					DOM.video.currentTime = goBack ? (DOM.video.currentTime - OPTIONS.skipTime) : 0;
 				}
 
 				function fw30(){
-					var goFw = ($scope.elems.video.currentTime < ($scope.elems.video.duration - $scope.skipTime));
+					var goFw = (DOM.video.currentTime < (DOM.video.duration - OPTIONS.skipTime));
 
 					if (goFw){
-						$scope.elems.video.currentTime = ($scope.elems.video.currentTime + $scope.skipTime);
+						DOM.video.currentTime = (DOM.video.currentTime + OPTIONS.skipTime);
 					} else {
-						$scope.elems.video.pause();
-						$scope.elems.video.currentTime = $scope.elems.video.duration;
+						DOM.video.pause();
+						DOM.video.currentTime = DOM.video.duration;
 
 					}
 				}
 
 				function playButtonHandler (){
 					$scope.$apply(function() {
-						if (!$scope.elems.video.paused){
-							$scope.elems.video.pause();
+						if (!DOM.video.paused){
+							DOM.video.pause();
 						} else {
-							$scope.elems.video.play();
+							DOM.video.play();
 						}
 
-						$scope.isPlaying = !$scope.elems.video.paused;
+						$scope.STATES.isPlaying = !DOM.video.paused;
 					});
 					
 				}
