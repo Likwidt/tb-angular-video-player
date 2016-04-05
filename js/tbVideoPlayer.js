@@ -179,6 +179,7 @@
 				var DOM = {};
 				var OPTIONS = {};
 				var tempVideoTime;
+				var sliderBounds;
 				
 				DOM.controls = $element[0];
 				DOM.forwardButton = DOM.controls.querySelector('.fw30');
@@ -196,16 +197,25 @@
 				$scope.STATES.timeIn;
 				$scope.STATES.timeLeft;
 
+				function initControls(e) {
+					sliderBounds = DOM.slider.getBoundingClientRect();
+
+					updateTimeCounters(e);
+				}
 
 				function updateTimeCounters(e) {
 					var video = e.target;
 					var currentTime = video.currentTime;
 					var timeLeft = $scope.STATES.duration - currentTime;
 
-					setTimeCounters(currentTime, timeLeft);		
+					setTimeCounters(currentTime, timeLeft);	
+
+					updateSliderPosition();	
 				}
 
 				function setTimeCounters(currentTime, timeLeft) {
+					updateSliderPosition(currentTime);
+
 					$scope.$apply(function() {
 						$scope.STATES.timeIn = parseTime(currentTime, 'up');
 						$scope.STATES.timeLeft = parseTime(timeLeft, 'down');			
@@ -238,23 +248,23 @@
 					DOM.node.removeEventListener('touchend', unbindSliderNode, false);
 				}
 
+				function updateSliderPosition(currentTime) {
+					var sliderPosition = currentTime * sliderBounds.width / $scope.STATES.duration;
+
+					DOM.node.style.left = [sliderPosition, 'px'].join('');
+				}
+
 				function sliderMove (e) {
 					e.stopPropagation();
-					var touch = e.touches[0];
-					var sliderBounds = DOM.slider.getBoundingClientRect();
-					var movePosition = touch.pageX;
-					var diff = movePosition - sliderBounds.left;
+					var event = e.touches[0];
+					var diff = event.pageX - sliderBounds.left
 					var timeLeft;
 
-
 					if (diff <= 0) { //too left
-						DOM.node.style.left = [0, 'px'].join('');
 						tempVideoTime = 0;
 					} else if (diff >= sliderBounds.width) { // too right
-						DOM.node.style.left = [sliderBounds.width, 'px'].join('');
 						tempVideoTime = $scope.STATES.duration;
 					} else { // ok
-						DOM.node.style.left = [diff, 'px'].join('');
 						tempVideoTime = ($scope.STATES.duration * diff) / sliderBounds.width;
 					}
 
@@ -292,7 +302,7 @@
 					
 				}
 
-				DOM.video.addEventListener('canplay', updateTimeCounters, false);
+				DOM.video.addEventListener('canplay', initControls, false);
 				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
 				DOM.forwardButton.addEventListener('touchstart', fw30, false);
 				DOM.backButton.addEventListener('touchstart', back30, false);
