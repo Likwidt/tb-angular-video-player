@@ -1,6 +1,5 @@
 @import 'mixins';
 
-
 .tb-video_container {
 	position: relative;
 	border: 2px solid black;
@@ -73,17 +72,6 @@
 	-webkit-transition-duration: 0.3s;
 }*/
 
-.time{
-	width: 100px;
-	height: 50px;
-	background-color: white;
-	color: black;
-	position: fixed;
-	top: 0;
-	left: 0;
-
-	display: none;
-}
 
 .controls {
 	display:table;
@@ -91,42 +79,6 @@
 	z-index: 3;
 	bottom:10px;
 	left:10px;
-}
-
-.controls > div{
-	display:table-cell;
-	width:70px;
-	height: 50px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	opacity: 0.5;
-	margin-right: 5px;
-}
-
-.playPause.play{
-	background-image: url(../img/pausebutton.png);
-}
-
-.playPause.pause{
-	background-image: url(../img/playbutton.png);
-}
-
-.controls > div:active{
-	opacity: 1;
-}
-
-.back30 {
-	cursor: pointer;
-	background-image: url(../img/30secsback.png)
-}
-
-.fw30{
-	cursor: pointer;
-	background-image: url(../img/30secsfw.png)
-}
-
-.controls > div.progressIndicator{
-	display: table;
 
 	*{
 			-webkit-user-select: none;  /* Chrome all / Safari all */
@@ -134,55 +86,72 @@
 			-ms-user-select: none;      /* IE 10+ */
 			user-select: none;   
 	}
+
+	> div{
+		display:table-cell;
+		width:70px;
+		height: 50px;
+		background-size: contain;
+		background-repeat: no-repeat;
+		opacity: 0.5;
+		margin-right: 5px;
+
+		&:active{
+			opacity: 1;
+		}
+
+		&.progressIndicator{
+			display: table;
+
+			> div{
+				font-family: Arial;
+				min-width: 56px;
+				padding: 0 10px;
+				display: table-cell;
+				vertical-align: middle;
+				font-size: 22px;
+				color: rgba(255,255,255,0.8);
+			}
+
+			.slider{
+				position: relative;
+				padding-bottom: 14px;
+			}
+
+			.node{
+				position: absolute;
+				left:0;
+				border-radius: 50%;
+				background-color: white;
+				width: 20px;
+				height: 20px;
+				top: 13px;
+
+				&:after{
+					cursor: pointer;
+					position: absolute;
+					border-radius: 50%;
+					background-color: transparent;
+					width: 60px;
+					height: 60px;
+					left: -100%;
+					top: -100%;
+					content: " ";   
+				}
+			}
+		}
+
+	.tb-vid_btn{
+		cursor: pointer;
+
+		&.play{ background-image: url(../img/pausebutton.png); }
+		&.pause{ background-image: url(../img/playbutton.png); }
+		&.back30 { background-image: url(../img/30secsback.png); }
+		&.fw30{	background-image: url(../img/30secsfw.png); }
+	}
 }
 
-.progressIndicator > div{
-	font-family: Arial;
-	min-width: 56px;
-	padding: 0 10px;
-	display: table-cell;
-	vertical-align: middle;
-	font-size: 22px;
-	color: rgba(255,255,255,0.8);
-}
 
-.progressIndicator > div.slider{
-	position: relative;
-	padding-bottom: 14px;
-}
-
-.progressIndicator div.node{
-	position: absolute;
-	left:0;
-	border-radius: 50%;
-	background-color: white;
-	width: 20px;
-	height: 20px;
-	top: 13px;
-}
-
-.progressIndicator div.node:after{
-	cursor: pointer;
-	position: absolute;
-	border-radius: 50%;
-	background-color: transparent;
-	width: 60px;
-	height: 60px;
-	left: -100%;
-	top: -100%;
-	content: " ";   
-
-
-}
-
-.pauseImg{
-	position: absolute;
-	z-index: 15;
-	left: 50%;
-  	-webkit-transform: translate(-50%);
-
-  	-webkit-transition: opacity 0.3s ease-in-out;
-}
 
 /*.footnote{
 	position: absolute;
