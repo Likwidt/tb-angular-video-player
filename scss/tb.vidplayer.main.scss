@@ -116,15 +116,24 @@
 }
 
 .back30 {
+	cursor: pointer;
 	background-image: url(../img/30secsback.png)
 }
 
 .fw30{
+	cursor: pointer;
 	background-image: url(../img/30secsfw.png)
 }
 
 .controls > div.progressIndicator{
 	display: table;
+
+	*{
+			-webkit-user-select: none;  /* Chrome all / Safari all */
+			-moz-user-select: none;     /* Firefox all */
+			-ms-user-select: none;      /* IE 10+ */
+			user-select: none;   
+	}
 }
 
 .progressIndicator > div{
@@ -153,6 +162,7 @@
 }
 
 .progressIndicator div.node:after{
+	cursor: pointer;
 	position: absolute;
 	border-radius: 50%;
 	background-color: transparent;
@@ -160,7 +170,7 @@
 	height: 60px;
 	left: -100%;
 	top: -100%;
-	content: " ";
+	content: " ";   
 
 
 }

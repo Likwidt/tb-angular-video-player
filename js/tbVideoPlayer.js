@@ -226,12 +226,19 @@
 					e.stopPropagation();
 
 					//stop updating time indices in the view
-					DOM.video.removeEventListener('timeupdate', updateTimeCounters, false);
+					DOM.video.removeEventListener('timeupdate', updateTimeCounters);
 
 					// bind slider behaviour
-					DOM.node.addEventListener('touchmove', sliderMove, false);
-					DOM.node.addEventListener('touchend', unbindSliderNode, false);
 
+					if (e.type === 'touchstart') {
+						DOM.node.addEventListener('touchmove', sliderMove, false);
+						DOM.node.addEventListener('touchend', unbindSliderNode, false);
+					} 
+
+					if (e.type === 'mousedown') {
+						document.addEventListener('mousemove', sliderMove, false);
+						document.addEventListener('mouseup', unbindSliderNode, false);					
+					}
 				}
 
 				function unbindSliderNode(e) {
@@ -243,17 +250,27 @@
 					DOM.video.addEventListener('timeupdate', updateTimeCounters, false);
 
 					// remove slider behaviour
-					DOM.node.removeEventListener('touchmove', sliderMove, false);
-					DOM.node.removeEventListener('touchend', unbindSliderNode, false);
+					if (e.type === 'touchend') {
+						DOM.node.removeEventListener('touchmove', sliderMove);
+						DOM.node.removeEventListener('touchend', unbindSliderNode);
+					} 
+
+					if (e.type === 'mouseup') {
+						document.removeEventListener('mousemove', sliderMove);
+						document.removeEventListener('mouseup', unbindSliderNode);		
+					}
+
 				}
 
 
 
 				function sliderMove (e) {
-					e.stopPropagation();
-					var event = e.touches[0];
+					var event = e.type === 'touchmove' ? e.touches[0] : e;
 					var diff = event.pageX - sliderBounds.left
 					var timeLeft;
+
+
+					e.stopPropagation();
 
 					if (diff <= 0) { //too left
 						tempVideoTime = 0;
@@ -299,6 +316,12 @@
 
 				DOM.video.addEventListener('canplay', initControls, false);
 				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
+
+				DOM.forwardButton.addEventListener('mousedown', fw30, false);
+				DOM.backButton.addEventListener('mousedown', back30, false);
+				DOM.playPause.addEventListener('mousedown', playButtonHandler, false);
+				DOM.node.addEventListener('mousedown', bindSliderNode, false);
+
 				DOM.forwardButton.addEventListener('touchstart', fw30, false);
 				DOM.backButton.addEventListener('touchstart', back30, false);
 				DOM.playPause.addEventListener('touchstart', playButtonHandler, false);
