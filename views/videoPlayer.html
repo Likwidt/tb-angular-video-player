@@ -1,11 +1,11 @@
-<div class="video-container" ng-cloak>
+<div class="tb-video_container" ng-cloak>
 	<!--div class="video-title">
 		<img ng-src="img/video-title-{{ video.data.keyword }}.png" />
 	</div -->
-	<div class="video-slide-thumb">
+	<!--div class="video-slide-thumb">
 		<img ng-src="{{ getAppropriateImage() }}" />
-	</div>
-	<video-controls></video-controls>
+	</div -->
+	<tb-video-controls></tb-video-controls>
 	<video data-name="{{ main.videoObject[0].keyword | trustUrl }}" autoplay>
 		<source ng-src="{{ main.videoObject[0].videoFileName | trustUrl }}" type="video/mp4" >
 	</video>

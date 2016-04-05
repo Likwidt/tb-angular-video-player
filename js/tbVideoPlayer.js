@@ -3,7 +3,7 @@
 
 	angular .module('tb-video-player', [])
 			.directive('tbVideoPlayer', ['$state', tbVideoPlayer])
-			.directive('tbvideoControls', [tbvideoControls])
+			.directive('tbVideoControls', [tbvideoControls])
 			.filter("trustUrl", ['$sce', function ($sce) {
 		        return function (recordingUrl) {
 		            return $sce.trustAsResourceUrl(recordingUrl);
@@ -38,22 +38,22 @@
 				$scope.elems = {};
 				$scope.elems.container = $element[0];
 				$scope.elems.video = $scope.elems.container.querySelector('video');
-				$scope.elems.videoTitle = $scope.elems.container.querySelector('.video-title');
+				//$scope.elems.videoTitle = $scope.elems.container.querySelector('.video-title');
 				$scope.elems.vidHeight = 539.5;
 				$scope.elems.videoName = $scope.elems.video.getAttribute('data-name');
-				$scope.elems.thumb = $scope.elems.container.querySelector('.video-slide-thumb');
-				$scope.elems.slideImage = $scope.elems.thumb.querySelector('img');
-				$scope.elems.slideImageSrc = null;
-				$scope.getAppropriateImage = getAppropriateImage;
+				//$scope.elems.thumb = $scope.elems.container.querySelector('.video-slide-thumb');
+				//$scope.elems.slideImage = $scope.elems.thumb.querySelector('img');
+				//$scope.elems.slideImageSrc = null;
+				//$scope.getAppropriateImage = getAppropriateImage;
 
 				$scope.timeIn = '0:00';
 				$scope.timeLeft = '0:00';
-				$scope.thumbExpanded = false;
+				//$scope.thumbExpanded = false;
 
 
-				$scope.elems.video.addEventListener('timeupdate', slideShow, false);
+				//$scope.elems.video.addEventListener('timeupdate', slideShow, false);
 				$scope.elems.video.addEventListener('canplay', initThumb, false);
-				$scope.elems.video.addEventListener('ended', backToProgram, false);
+				//$scope.elems.video.addEventListener('ended', backToProgram, false);
 
 				function getAppropriateImage() {
 					var size = !!$scope.thumbExpanded ? 'lg/' : 'sm/';
@@ -71,16 +71,16 @@
 						$scope.isPlaying = !$scope.elems.video.paused;
 					});
 
-					if (!!$scope.video.data.timeIndexes.length && $scope.elems.thumb.initStarted !== true){
+					/*if (!!$scope.video.data.timeIndexes.length && $scope.elems.thumb.initStarted !== true){
 						$scope.elems.thumb.addEventListener('touchstart', toggleClone, false);			
-					}
+					}*/
 
 					$scope.elems.video.removeAttribute("controls");
 
-					$scope.elems.thumb['initStarted'] = true;
+					//$scope.elems.thumb['initStarted'] = true;
 				}
 
-				function expandImage(){
+				/*function expandImage(){
 					$scope.elems.container.classList.add('expanded');
 					$scope.thumbExpanded = true;
 				}
@@ -97,9 +97,9 @@
 					} else {
 						shrinkImage();
 					}
-				}
+				}*/
 
-				function slideShow( e ){		
+				/*function slideShow( e ){		
 					var ct = Math.ceil($scope.elems.video.currentTime),
 						duration = Math.ceil($scope.elems.video.duration),
 						ti = parseTime(ct),
@@ -145,14 +145,14 @@
 							i++;
 						}		
 					}
-				}
+				}*/
 
-				function backToProgram(){
+				/*function backToProgram(){
 					$scope.$apply(function() {
 						$state.go('program');
 					});
 					
-				}
+				}*/
 
 			}
 		};
