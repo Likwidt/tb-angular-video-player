@@ -39,6 +39,8 @@
 
 				$scope.video = DOM.video;
 
+				$scope.STATES = {};
+
 				//DOM.videoTitle = $scope.elems.container.querySelector('.video-title');
 				//$scope.elems.vidHeight = 539.5;
 				//DOM.videoName = DOM.video.getAttribute('data-name');
@@ -50,7 +52,7 @@
 
 
 				//DOM.video.addEventListener('timeupdate', slideShow, false);
-				DOM.video.addEventListener('canplay', initThumb, false);
+				DOM.video.addEventListener('canplay', initVideo, false);
 				//DOM.video.addEventListener('ended', backToProgram, false);
 
 				/*function getAppropriateImage() {
@@ -63,7 +65,19 @@
 					
 				}*/
 
-				function initThumb(){
+				function initVideo() {
+					DOM.video.removeAttribute("controls");
+					$scope.STATES.duration = Math.ceil(DOM.video.duration);
+
+					$scope.$apply(function() {
+						$scope.STATES.isPlaying = !DOM.video.paused;
+					});
+					
+
+
+				}
+
+				/*function initThumb(){
 
 					$scope.$apply(function() {
 						$scope.isPlaying = !DOM.video.paused;
@@ -73,7 +87,7 @@
 						$scope.elems.thumb.addEventListener('touchstart', toggleClone, false);			
 					}*/
 
-					DOM.video.removeAttribute("controls");
+					/*DOM.video.removeAttribute("controls");
 
 					//$scope.elems.thumb['initStarted'] = true;
 				}
@@ -164,6 +178,7 @@
 			link: function($scope, $element) {	
 				var DOM = {};
 				var OPTIONS = {};
+				var tempVideoTime;
 				
 				DOM.controls = $element[0];
 				DOM.forwardButton = DOM.controls.querySelector('.fw30');
@@ -177,43 +192,34 @@
 				
 				OPTIONS.skipTime = 30;
 
-				$scope.STATES = {};
 				$scope.STATES.isPlaying = false;
 				$scope.STATES.timeIn;
 				$scope.STATES.timeLeft;
 
-				DOM.video.addEventListener('canplay', updateTimeCounters, false);
-				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
 
 				function updateTimeCounters(e) {
 					var video = e.target;
 					var currentTime = video.currentTime;
-					var timeLeft = video.duration - currentTime;
+					var timeLeft = $scope.STATES.duration - currentTime;
 
+					setTimeCounters(currentTime, timeLeft);		
+				}
+
+				function setTimeCounters(currentTime, timeLeft) {
 					$scope.$apply(function() {
-
-						// init time counters
 						$scope.STATES.timeIn = parseTime(currentTime, 'up');
 						$scope.STATES.timeLeft = parseTime(timeLeft, 'down');			
 					});
 				}
 
 
-
-
-							var tempVideoTime;
-
-
-				DOM.forwardButton.addEventListener('touchstart', fw30, false);
-				DOM.backButton.addEventListener('touchstart', back30, false);
-				DOM.playPause.addEventListener('touchstart', playButtonHandler, false);
-
-				DOM.node.addEventListener('touchstart', bindSliderNode, false);
-
-
 				function bindSliderNode(e) {
 					e.stopPropagation();
-					DOM.node['isBeingMovedByUser'] = true;
+
+					//stop updating time indices in the view
+					DOM.video.removeEventListener('timeupdate', updateTimeCounters, false);
+
+					// bind slider behaviour
 					DOM.node.addEventListener('touchmove', sliderMove, false);
 					DOM.node.addEventListener('touchend', unbindSliderNode, false);
 
@@ -221,10 +227,13 @@
 
 				function unbindSliderNode(e) {
 					e.stopPropagation();
-					DOM.node['isBeingMovedByUser'] = false;
 
 					DOM.video.currentTime = tempVideoTime;
 
+					//restart updating time indices in the view
+					DOM.video.addEventListener('timeupdate', updateTimeCounters, false);
+
+					// remove slider behaviour
 					DOM.node.removeEventListener('touchmove', sliderMove, false);
 					DOM.node.removeEventListener('touchend', unbindSliderNode, false);
 				}
@@ -232,11 +241,10 @@
 				function sliderMove (e) {
 					e.stopPropagation();
 					var touch = e.touches[0];
-					var duration = Math.ceil(DOM.video.duration);
 					var sliderBounds = DOM.slider.getBoundingClientRect();
 					var movePosition = touch.pageX;
 					var diff = movePosition - sliderBounds.left;
-
+					var timeLeft;
 
 
 					if (diff <= 0) { //too left
@@ -244,33 +252,29 @@
 						tempVideoTime = 0;
 					} else if (diff >= sliderBounds.width) { // too right
 						DOM.node.style.left = [sliderBounds.width, 'px'].join('');
-						tempVideoTime = duration;
+						tempVideoTime = $scope.STATES.duration;
 					} else { // ok
 						DOM.node.style.left = [diff, 'px'].join('');
-						tempVideoTime = (duration * diff) / sliderBounds.width;
+						tempVideoTime = ($scope.STATES.duration * diff) / sliderBounds.width;
 					}
 
-					$scope.$apply(function() {
-						$scope.STATES.timeIn = parseTime(tempVideoTime);
-						$scope.STATES.timeLeft = parseTime(duration - tempVideoTime);
-					});
+					timeLeft = $scope.STATES.duration - tempVideoTime;
 
+					setTimeCounters(tempVideoTime, timeLeft);
 				}
 
 				function back30(){
-					var goBack = (DOM.video.currentTime >= OPTIONS.skipTime);
+					var currentTime = DOM.video.currentTime;
 
-					DOM.video.currentTime = goBack ? (DOM.video.currentTime - OPTIONS.skipTime) : 0;
+					DOM.video.currentTime = currentTime >= OPTIONS.skipTime ? (currentTime - OPTIONS.skipTime) : 0;
 				}
 
 				function fw30(){
-					var goFw = (DOM.video.currentTime < (DOM.video.duration - OPTIONS.skipTime));
-
-					if (goFw){
-						DOM.video.currentTime = (DOM.video.currentTime + OPTIONS.skipTime);
+					if (DOM.video.currentTime < ($scope.STATES.duration - OPTIONS.skipTime)){
+						DOM.video.currentTime += OPTIONS.skipTime;
 					} else {
 						DOM.video.pause();
-						DOM.video.currentTime = DOM.video.duration;
+						DOM.video.currentTime = $scope.STATES.duration;
 
 					}
 				}
@@ -287,6 +291,13 @@
 					});
 					
 				}
+
+				DOM.video.addEventListener('canplay', updateTimeCounters, false);
+				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
+				DOM.forwardButton.addEventListener('touchstart', fw30, false);
+				DOM.backButton.addEventListener('touchstart', back30, false);
+				DOM.playPause.addEventListener('touchstart', playButtonHandler, false);
+				DOM.node.addEventListener('touchstart', bindSliderNode, false);
 			}
 		};
 	}		
