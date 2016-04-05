@@ -212,14 +212,15 @@
 				}
 
 				function setTimeCounters(currentTime, timeLeft) {
-					updateSliderPosition(currentTime);
+					var sliderPosition = currentTime * sliderBounds.width / $scope.STATES.duration;
+
+					DOM.node.style.left = [sliderPosition, 'px'].join('');
 
 					$scope.$apply(function() {
 						$scope.STATES.timeIn = parseTime(currentTime, 'up');
 						$scope.STATES.timeLeft = parseTime(timeLeft, 'down');			
 					});
 				}
-
 
 				function bindSliderNode(e) {
 					e.stopPropagation();
@@ -246,11 +247,7 @@
 					DOM.node.removeEventListener('touchend', unbindSliderNode, false);
 				}
 
-				function updateSliderPosition(currentTime) {
-					var sliderPosition = currentTime * sliderBounds.width / $scope.STATES.duration;
 
-					DOM.node.style.left = [sliderPosition, 'px'].join('');
-				}
 
 				function sliderMove (e) {
 					e.stopPropagation();
