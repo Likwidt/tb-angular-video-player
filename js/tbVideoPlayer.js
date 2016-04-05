@@ -209,8 +209,6 @@
 					var timeLeft = $scope.STATES.duration - currentTime;
 
 					setTimeCounters(currentTime, timeLeft);	
-
-					updateSliderPosition();	
 				}
 
 				function setTimeCounters(currentTime, timeLeft) {
