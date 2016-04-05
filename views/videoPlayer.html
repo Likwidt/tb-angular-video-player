@@ -5,7 +5,7 @@
 	<!--div class="video-slide-thumb">
 		<img ng-src="{{ getAppropriateImage() }}" />
 	</div -->
-	<tb-video-controls></tb-video-controls>
+	<tb-video-controls ng-if="STATES.hasControls"></tb-video-controls>
 	<video data-name="{{ main.videoObject[0].keyword | trustUrl }}" autoplay>
 		<source ng-src="{{ main.videoObject[0].videoFileName | trustUrl }}" type="video/mp4" >
 	</video>

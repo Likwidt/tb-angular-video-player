@@ -32,7 +32,7 @@
 			restrict: 'E',
 			replace: true,
 			templateUrl: 'views/videoPlayer.html',
-			link: function($scope, $element) {
+			link: function($scope, $element, $attrs) {
 				var DOM = {};
 				DOM.container = $element[0];
 				DOM.video =  DOM.container.querySelector('video');
@@ -40,6 +40,8 @@
 				$scope.video = DOM.video;
 
 				$scope.STATES = {};
+				$scope.STATES.hasControls = typeof $attrs.controls !== 'undefined';
+
 
 				//DOM.videoTitle = $scope.elems.container.querySelector('.video-title');
 				//$scope.elems.vidHeight = 539.5;
@@ -203,9 +205,8 @@
 					updateTimeCounters(e);
 				}
 
-				function updateTimeCounters(e) {
-					var video = e.target;
-					var currentTime = video.currentTime;
+				function updateTimeCounters() {
+					var currentTime = DOM.video.currentTime;
 					var timeLeft = $scope.STATES.duration - currentTime;
 
 					setTimeCounters(currentTime, timeLeft);	
@@ -268,7 +269,6 @@
 					var event = e.type === 'touchmove' ? e.touches[0] : e;
 					var diff = event.pageX - sliderBounds.left
 					var timeLeft;
-
 
 					e.stopPropagation();
 
