@@ -15,6 +15,8 @@
 			{keyword: 'concluding-remarks', videoFileName: 'vids/Questions.mp4', position: {x: 546.5, y: 476.5, w: 353.5}, entry: null, timeIndexes: [], firstSlide: 1}
 		];
 
+		MainCtrl.testObj = {keyword: 'welcome-and-intoductions', videoFileName: 'vids/Intro.mp4', position: {x: 85.5, y: 171, w: 348}, entry: null, timeIndexes: [0, 13.5, 35.5, 85.5, 105, 118.5, 126.5, 145.5, 186.5, 99999], firstSlide: 1};
+
 	}
 
 	angular	.module('app')
