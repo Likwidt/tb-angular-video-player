@@ -4,29 +4,13 @@
 	angular .module('tb-video-player')
 			.directive('tbVideoControls', [tbVideoControls])
 
-	function pad3(num){
-		var n = (num < 10) ? ['00', num].join('') : (num < 100) ? ['0', num].join('') : num;
-		return n;
-	}
-
-	function pad2(num){
-		var n = (num < 10) ? ['0', num].join('') : num;
-		return n;
-	}
-
-	function parseTime(t, round){
-		var minutes = Math.floor(t/60),
-			seconds = round != 'up' ? pad2(Math.floor(t%60)) : pad2(Math.ceil(t%60));
-
-		return [minutes, ':', seconds].join('');
-	}
-
 	function tbVideoControls() {
 		return {
 			restrict: 'E',
 			replace: true,
+			require: '^tbVideoPlayer',
 			templateUrl: 'views/videoControls.html',
-			link: function($scope, $element) {	
+			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {	
 				var DOM = {};
 				var OPTIONS = {};
 				var tempVideoTime;
@@ -68,8 +52,8 @@
 					DOM.node.style.left = [sliderPosition, 'px'].join('');
 
 					$scope.$apply(function() {
-						$scope.STATES.timeIn = parseTime(currentTime, 'up');
-						$scope.STATES.timeLeft = parseTime(timeLeft, 'down');			
+						$scope.STATES.timeIn = tbVideoPlayerCtrl.parseTime(currentTime, 'up');
+						$scope.STATES.timeLeft = tbVideoPlayerCtrl.parseTime(timeLeft, 'down');			
 					});
 				}
 
@@ -110,7 +94,6 @@
 						document.removeEventListener('mousemove', sliderMove);
 						document.removeEventListener('mouseup', unbindSliderNode);		
 					}
-
 				}
 
 
@@ -147,7 +130,6 @@
 					} else {
 						DOM.video.pause();
 						DOM.video.currentTime = $scope.STATES.duration;
-
 					}
 				}
 

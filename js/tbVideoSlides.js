@@ -8,9 +8,11 @@
 		return {
 			restrict: 'E',
 			replace: true,
-			template: '<div class="video-slide-thumb" ng-class="{\'expanded\' : STATES.thumbExpanded}"><img src="img/slides/sm/Slide001.jpg" /></div>',
-			link: function($scope, $element) {
+			require: '^tbVideoPlayer',
+			template: '<div class="video-slide-thumb tb-slide-position" ng-class="{\'expanded\' : STATES.thumbExpanded}"><img src="img/slides/sm/Slide004.jpg" /></div>',
+			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
+				var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
 
 				DOM.slideContainer = $element[0];
 				DOM.video = $scope.video;
@@ -19,10 +21,31 @@
 				$scope.STATES.slideImageSrc = null;
 				$scope.STATES.thumbExpanded = false;
 
+				function calculateTransforms() {
+					var videoBounds = DOM.video.getBoundingClientRect();
+					var slideBounds = DOM.slideContainer.getBoundingClientRect();
+					var widthRatio = videoBounds.width/slideBounds.width;
+					var heightRatio = videoBounds.height/slideBounds.height;
+					var scaleRatio = Math.min(widthRatio, heightRatio);
+					var transformPercentage = scaleRatio/2 * 100;
+
+					return ['translate(-', transformPercentage, '%, -', transformPercentage, '%) scale(', scaleRatio, ')'].join('');
+				}
+
+				function swapScalesImageWithFullSize() {
+					
+				}
+
 
 				function toggleClone(){
+					var transform = !$scope.STATES.thumbExpanded ? calculateTransforms() : null;
+
 					$scope.$apply(function() {
 						$scope.STATES.thumbExpanded = !$scope.STATES.thumbExpanded;
+
+						DOM.slideContainer.style.transform = transform;
+						DOM.slideContainer.style.msTransform  = transform;
+						DOM.slideContainer.style.WebkitTransform  = transform;
 					});
 				}
 
@@ -31,7 +54,10 @@
 					DOM.slideContainer.addEventListener('touchstart', toggleClone, false);
 				}
 
+
+				console.log(transitionEnd);
 				$scope.video.addEventListener('canplay', initSlide, false);
+				DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
 
 
 
