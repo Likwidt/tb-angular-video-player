@@ -34,6 +34,7 @@
 			replace: true,
 			scope: {
 				data: '=',
+				slides: '=',
 				src: '@'
 			},
 			templateUrl: 'views/videoPlayer.html',
@@ -42,7 +43,7 @@
 
 				$scope.STATES = {};
 				$scope.STATES.hasControls = typeof $attrs.controls !== 'undefined';
-				
+				$scope.STATES.hasSlides = typeof $attrs.slides !== 'undefined' && !!$scope.slides.length;
 
 				function initVideo() {
 					$scope.STATES.duration = Math.ceil($scope.video.duration);
@@ -61,8 +62,33 @@
 		return {
 			restrict: 'E',
 			replace: true,
-			template: '<div class="video-slide-thumb"><img src="img/slides/sm/Slide001.jpg" /></div>',
+			template: '<div class="video-slide-thumb" ng-class="{\'expanded\' : STATES.thumbExpanded}"><img src="img/slides/sm/Slide001.jpg" /></div>',
 			link: function($scope, $element) {
+				var DOM = {}; 
+
+				DOM.slideContainer = $element[0];
+				DOM.video = $scope.video;
+				DOM.slideImage = DOM.slideContainer.querySelector('img');
+
+				$scope.STATES.slideImageSrc = null;
+				$scope.STATES.thumbExpanded = false;
+
+
+				function toggleClone(){
+					$scope.$apply(function() {
+						$scope.STATES.thumbExpanded = !$scope.STATES.thumbExpanded;
+					});
+				}
+
+				function initSlide() {
+					DOM.slideContainer.addEventListener('mousedown', toggleClone, false);
+					DOM.slideContainer.addEventListener('touchstart', toggleClone, false);
+				}
+
+				$scope.video.addEventListener('canplay', initSlide, false);
+
+
+
 				//DOM.videoTitle = $scope.elems.container.querySelector('.video-title');
 					//$scope.elems.vidHeight = 539.5;
 					//DOM.videoName = DOM.video.getAttribute('data-name');
@@ -191,6 +217,7 @@
 				var sliderBounds;
 				
 				DOM.controls = $element[0];
+				DOM.video = $scope.video;
 				DOM.forwardButton = DOM.controls.querySelector('.fw30');
 				DOM.backButton = DOM.controls.querySelector('.back30');
 				DOM.slider = DOM.controls.querySelector('.slider > img');
@@ -198,7 +225,7 @@
 				DOM.playPause = DOM.controls.querySelector('.playPause');
 				DOM.timeIn = DOM.controls.querySelector('.timeIn');
 				DOM.timeLeft = DOM.controls.querySelector('.timeLeft');
-				DOM.video = $scope.video;
+				
 				
 				OPTIONS.skipTime = 30;
 
