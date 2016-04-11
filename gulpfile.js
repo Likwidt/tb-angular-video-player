@@ -45,7 +45,7 @@ gulp.task('open', function () {
             }));
 });
 
-gulp.task('sass', ['clean-css'], function () {
+gulp.task('sass', function () {
   return gulp.src(sources.sass)
     .pipe(sass.sync().on('error', sass.logError))
     .pipe(gulp.dest('css'));
@@ -104,7 +104,7 @@ gulp.task('dist', function(done) {
 });
  
 gulp.task('default', function(done) {
-  runSequence('sass', 'inject', 'watch', 'connect', 'open', done)
+  runSequence('clean-css', 'sass', 'inject', 'watch', 'connect', 'open', done)
 });
 
  

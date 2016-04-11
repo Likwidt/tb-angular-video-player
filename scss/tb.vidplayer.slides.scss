@@ -7,6 +7,10 @@
 	background-color: transparent;
 	@include vendor-prefix('transition-duration', '3s');
 
+	&.temp-position{
+		
+	}
+
 	&.expanded{
 		left: 50%;
 		top: 50%;
