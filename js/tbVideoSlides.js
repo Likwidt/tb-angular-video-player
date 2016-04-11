@@ -13,6 +13,7 @@
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
 				var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
+				var scaleVars;
 
 				DOM.slideContainer = $element[0];
 				DOM.master = $scope.master;
@@ -24,38 +25,54 @@
 				$scope.STATES.thumbExpanded = false;
 				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
 
+				function calculateScaleVars() {
+					return {
+						videoDimensions: { 
+							bounds: DOM.video.getBoundingClientRect() 
+						},
+						slideDimensions: { 
+							bounds: DOM.slideContainer.getBoundingClientRect(),
+							offsetLeft: DOM.slideContainer.offsetLeft,
+							offsetTop: DOM.slideContainer.offsetTop
+						},
+						fullSizeSlide: null
+					};
+				}
+
+				function slideResizeHandler(e) {
+					scaleVars = calculateScaleVars();
+					removeExpandSlide(e);
+				}
+
 				function swapScalesImageWithFullSize(e) {
-					var rect = e.target.getBoundingClientRect();
+					if (scaleVars.fullSizeSlide === null) {
+						scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect()
+					}
 
-
-					if ($scope.STATES.thumbExpanded) {
-					
-						DOM.slideClone.style.top = rect.top - DOM.master.offsetTop + 'px';
-						DOM.slideClone.style.left = rect.left - DOM.master.offsetLeft + 'px'; 
-						DOM.slideClone.style.width = rect.width + 'px'; 
-						DOM.slideClone.style.height = rect.height + 'px'; 
+					if ($scope.STATES.thumbExpanded) {	
+						DOM.slideClone.style.top = scaleVars.fullSizeSlide.top - DOM.master.offsetTop + 'px';
+						DOM.slideClone.style.left = scaleVars.fullSizeSlide.left - DOM.master.offsetLeft + 'px'; 
+						DOM.slideClone.style.width = scaleVars.fullSizeSlide.width + 'px'; 
+						DOM.slideClone.style.height = scaleVars.fullSizeSlide.height + 'px'; 
 						DOM.slideClone.classList.add('visible');
 					}
 				}
 
 				function calculateScale() {
-					var videoRect = DOM.video.getBoundingClientRect();
-					var slideRect = DOM.slideImage.getBoundingClientRect();
-					var scaleX = videoRect.width / slideRect.width;
-					var scaleY = videoRect.height / slideRect.height;
-					var axis = scaleX <= scaleY ? 'x' : 'y';
+					var scaleX = scaleVars.videoDimensions.bounds.width / scaleVars.slideDimensions.bounds.width;
+					var scaleY = scaleVars.videoDimensions.bounds.height / scaleVars.slideDimensions.bounds.height;
 
-					return { magnitude: Math.min(scaleX, scaleY), axis: axis };
+					return Math.min(scaleX, scaleY);
 				}
 
 				function expandSlide(e) {
 					var scale = calculateScale();
-					var xTransform = -1*((DOM.slideContainer.offsetLeft - (DOM.video.getBoundingClientRect().width - DOM.slideContainer.getBoundingClientRect().width*scale.magnitude)/2)) + 'px';
-					var yTransform = -1*DOM.slideContainer.offsetTop + 'px';
+					var xTransform = -1*((scaleVars.slideDimensions.offsetLeft - (scaleVars.videoDimensions.bounds.width - scaleVars.slideDimensions.bounds.width*scale)/2)) + 'px';
+					var yTransform = -1*scaleVars.slideDimensions.offsetTop + 'px';
 
 					e.preventDefault();		
 
-					DOM.slideContainer.style.transform = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale.magnitude + ')';
+					DOM.slideContainer.style.transform = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale + ')';
 
 					$scope.STATES.thumbExpanded = true;
 				}
@@ -64,22 +81,9 @@
 					e.preventDefault();
 
 					DOM.slideContainer.style.transform = null;
-
 					DOM.slideClone.classList.remove('visible');
 
 					$scope.STATES.thumbExpanded = false;
-				}
-
-				function toggleSlide(e){
-					e.preventDefault();
-
-					if (!$scope.STATES.thumbExpanded) {
-						expandSlide();
-					} else {
-						removeExpandSlide();
-					}
-					
-					
 				}
 
 				function initSlide() {
@@ -88,11 +92,10 @@
 					DOM.slideClone.addEventListener('mousedown', removeExpandSlide, false);
 					DOM.slideClone.addEventListener('touchstart', removeExpandSlide, false);
 					DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
-					window.addEventListener('resize', removeExpandSlide, false);
+					window.addEventListener('resize', slideResizeHandler, false);
+					scaleVars = calculateScaleVars();
 				}
 
-
-				//console.log(transitionEnd);
 				$scope.video.addEventListener('canplay', initSlide, false);
 				
 
