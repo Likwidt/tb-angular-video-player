@@ -32,6 +32,20 @@
 			return [minutes, ':', seconds].join('');
 		}
 
+		function browserTransform() {
+			var el = document.createElement('fakeelement');
+			var browserPrefixes = ['OTransform', 'MozTransform', 'WebkitTransform'];
+			var i;
+
+			for (i in browserPrefixes) {
+				if (typeof el.style[browserPrefixes[i]] !== 'undefined') {
+					return browserPrefixes[i];
+				}
+			}
+
+			return 'transform';
+		}
+
 		/* From Modernizr */
 		function whichTransitionEvent(){
 		    var t;
@@ -53,7 +67,8 @@
 		ctrl.pad3 = pad3;
 		ctrl.pad2 = pad2;
 		ctrl.parseTime = parseTime;
-		ctrl.whichTransitionEvent = whichTransitionEvent
+		ctrl.whichTransitionEvent = whichTransitionEvent;
+		ctrl.browserTransform = browserTransform;
 	}
 
 	function tbVideoPlayer() {
