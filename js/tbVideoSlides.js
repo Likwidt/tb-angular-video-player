@@ -12,7 +12,8 @@
 			templateUrl: 'views/videoSlides.html',
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
-				var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
+				var transitionEndEvent = tbVideoPlayerCtrl.whichTransitionEvent();
+				var browserTransform = tbVideoPlayerCtrl.browserTransform();
 				var scaleVars;
 
 				DOM.slideContainer = $element[0];
@@ -45,11 +46,11 @@
 				}
 
 				function swapScalesImageWithFullSize(e) {
-					if (scaleVars.fullSizeSlide === null) {
-						scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect()
-					}
-
 					if ($scope.STATES.thumbExpanded) {	
+						if (scaleVars.fullSizeSlide === null) {
+							scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect()
+						}
+
 						DOM.slideClone.style.top = scaleVars.fullSizeSlide.top - DOM.master.offsetTop + 'px';
 						DOM.slideClone.style.left = scaleVars.fullSizeSlide.left - DOM.master.offsetLeft + 'px'; 
 						DOM.slideClone.style.width = scaleVars.fullSizeSlide.width + 'px'; 
@@ -72,7 +73,7 @@
 
 					e.preventDefault();		
 
-					DOM.slideContainer.style.transform = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale + ')';
+					DOM.slideContainer.style[browserTransform] = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale + ')';
 
 					$scope.STATES.thumbExpanded = true;
 				}
@@ -80,7 +81,7 @@
 				function removeExpandSlide(e) {
 					e.preventDefault();
 
-					DOM.slideContainer.style.transform = null;
+					DOM.slideContainer.style[browserTransform] = null;
 					DOM.slideClone.classList.remove('visible');
 
 					$scope.STATES.thumbExpanded = false;
@@ -91,7 +92,7 @@
 					DOM.slideContainer.addEventListener('touchstart', expandSlide, false);
 					DOM.slideClone.addEventListener('mousedown', removeExpandSlide, false);
 					DOM.slideClone.addEventListener('touchstart', removeExpandSlide, false);
-					DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
+					DOM.slideContainer.addEventListener(transitionEndEvent, swapScalesImageWithFullSize, false);
 					window.addEventListener('resize', slideResizeHandler, false);
 					scaleVars = calculateScaleVars();
 				}
