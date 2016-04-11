@@ -17,7 +17,7 @@ var angularFilesort = require('gulp-angular-filesort');
 var Karma = require('karma').Server;
 var sources = {
 	js: ['js/*.js', 'js/**/*.js'],
-  sass: ['scss/*.*'],
+  sass: ['scss/*.*', '!scss/mixins.scss'],
 	css: ['css/*.css'],
 	html: ['index.html', 'views/*.html']
 }
@@ -45,7 +45,7 @@ gulp.task('open', function () {
             }));
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', ['clean-css'], function () {
   return gulp.src(sources.sass)
     .pipe(sass.sync().on('error', sass.logError))
     .pipe(gulp.dest('css'));
@@ -83,6 +83,11 @@ gulp.task('watch-js', function () {
 
 gulp.task('clean-dist', function() {
   return gulp .src(['dist'])
+              .pipe(clean({force: true}));
+});
+
+gulp.task('clean-css', function() {
+  return gulp .src(['css'])
               .pipe(clean({force: true}));
 });
 

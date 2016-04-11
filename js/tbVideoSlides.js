@@ -9,7 +9,7 @@
 			restrict: 'E',
 			replace: true,
 			require: '^tbVideoPlayer',
-			template: '<div class="video-slide-thumb tb-slide-position" ng-class="{\'expanded\' : STATES.thumbExpanded}"><img src="img/slides/sm/Slide004.jpg" /></div>',
+			templateUrl: 'views/videoSlides.html',
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
 				//var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
@@ -18,41 +18,27 @@
 				DOM.video = $scope.video;
 				DOM.slideImage = DOM.slideContainer.querySelector('img');
 
-				$scope.STATES.slideImageSrc = null;
 				$scope.STATES.thumbExpanded = false;
 
-				function calculateTransforms() {
-					var videoBounds = DOM.video.getBoundingClientRect();
-					var slideBounds = DOM.slideContainer.getBoundingClientRect();
-					var widthRatio = videoBounds.width/slideBounds.width;
-					var heightRatio = videoBounds.height/slideBounds.height;
-					var scaleRatio = Math.min(widthRatio, heightRatio);
-					var transformPercentage = scaleRatio/2 * 100;
-
-					return ['translate(-', transformPercentage, '%, -', transformPercentage, '%) scale(', scaleRatio, ')'].join('');
-				}
-
-				function swapScalesImageWithFullSize() {
-					
-				}
 
 
-				function toggleClone(e){
+				function toggleSlide(e){
 					e.preventDefault();
-					var transform = !$scope.STATES.thumbExpanded ? calculateTransforms() : null;
 
-					$scope.$apply(function() {
-						$scope.STATES.thumbExpanded = !$scope.STATES.thumbExpanded;
+					var thumbExpanded = $scope.STATES.thumbExpanded;
 
-						DOM.slideContainer.style.transform = transform;
-						DOM.slideContainer.style.msTransform  = transform;
-						DOM.slideContainer.style.WebkitTransform  = transform;
-					});
+					if(!thumbExpanded) {
+						DOM.slideContainer.classList.add('expanded');
+					} else {
+						DOM.slideContainer.classList.remove('expanded');
+					}
+					
+					$scope.STATES.thumbExpanded = !thumbExpanded;
 				}
 
 				function initSlide() {
-					DOM.slideContainer.addEventListener('mousedown', toggleClone, false);
-					DOM.slideContainer.addEventListener('touchstart', toggleClone, false);
+					DOM.slideContainer.addEventListener('mousedown', toggleSlide, false);
+					DOM.slideContainer.addEventListener('touchstart', toggleSlide, false);
 				}
 
 

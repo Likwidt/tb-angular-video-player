@@ -1,0 +1,21 @@
+@import 'mixins';
+
+.video-slide-thumb {
+	position: absolute;
+
+	z-index: 2;
+	background-color: transparent;
+	@include vendor-prefix('transition-duration', '3s');
+
+	&.expanded{
+		left: 50%;
+		top: 50%;
+		@include vendor-prefix('transform', 'translate(-50%, -50%) scale(1.44)');
+
+	}
+
+	> img{
+		width: 100%;
+		vertical-align: bottom;
+	}
+}
