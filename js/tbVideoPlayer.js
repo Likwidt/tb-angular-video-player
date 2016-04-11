@@ -68,7 +68,8 @@
 			controller: 'tbVideoPlayerCtrl',
 			templateUrl: 'views/videoPlayer.html',
 			link: function($scope, $element, $attrs) {
-				$scope.video =  $element[0].querySelector('video');
+				$scope.master = $element[0];
+				$scope.video =  $scope.master.querySelector('video');
 
 				$scope.STATES = {};
 				$scope.STATES.hasControls = typeof $attrs.controls !== 'undefined';

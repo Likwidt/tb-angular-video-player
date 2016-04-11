@@ -12,39 +12,90 @@
 			templateUrl: 'views/videoSlides.html',
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
-				//var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
+				var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
 
 				DOM.slideContainer = $element[0];
+				DOM.master = $scope.master;
 				DOM.video = $scope.video;
 				DOM.slideImage = DOM.slideContainer.querySelector('img');
+				DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
+
 
 				$scope.STATES.thumbExpanded = false;
+				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
+
+				function swapScalesImageWithFullSize(e) {
+					var rect = e.target.getBoundingClientRect();
 
 
+					if ($scope.STATES.thumbExpanded) {
+					
+						DOM.slideClone.style.top = rect.top - DOM.master.offsetTop + 'px';
+						DOM.slideClone.style.left = rect.left - DOM.master.offsetLeft + 'px'; 
+						DOM.slideClone.style.width = rect.width + 'px'; 
+						DOM.slideClone.style.height = rect.height + 'px'; 
+						DOM.slideClone.classList.add('visible');
+					}
+				}
+
+				function calculateScale() {
+					var videoRect = DOM.video.getBoundingClientRect();
+					var slideRect = DOM.slideImage.getBoundingClientRect();
+					var scaleX = videoRect.width / slideRect.width;
+					var scaleY = videoRect.height / slideRect.height;
+					var axis = scaleX <= scaleY ? 'x' : 'y';
+
+					return { magnitude: Math.min(scaleX, scaleY), axis: axis };
+				}
+
+				function expandSlide(e) {
+					var scale = calculateScale();
+					var xTransform = -1*((DOM.slideContainer.offsetLeft - (DOM.video.getBoundingClientRect().width - DOM.slideContainer.getBoundingClientRect().width*scale.magnitude)/2)) + 'px';
+					var yTransform = -1*DOM.slideContainer.offsetTop + 'px';
+
+					e.preventDefault();		
+
+					DOM.slideContainer.style.transform = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale.magnitude + ')';
+
+					$scope.STATES.thumbExpanded = true;
+				}
+
+				function removeExpandSlide(e) {
+					e.preventDefault();
+
+					DOM.slideContainer.style.transform = null;
+
+					DOM.slideClone.classList.remove('visible');
+
+					$scope.STATES.thumbExpanded = false;
+				}
 
 				function toggleSlide(e){
 					e.preventDefault();
 
-					var thumbExpanded = $scope.STATES.thumbExpanded;
-
-					if(!thumbExpanded) {
-						DOM.slideContainer.classList.add('expanded');
+					if (!$scope.STATES.thumbExpanded) {
+						expandSlide();
 					} else {
-						DOM.slideContainer.classList.remove('expanded');
+						removeExpandSlide();
 					}
 					
-					$scope.STATES.thumbExpanded = !thumbExpanded;
+					
 				}
 
 				function initSlide() {
-					DOM.slideContainer.addEventListener('mousedown', toggleSlide, false);
-					DOM.slideContainer.addEventListener('touchstart', toggleSlide, false);
+					DOM.slideContainer.addEventListener('mousedown', expandSlide, false);
+					DOM.slideContainer.addEventListener('touchstart', expandSlide, false);
+					DOM.slideClone.addEventListener('mousedown', removeExpandSlide, false);
+					DOM.slideClone.addEventListener('touchstart', removeExpandSlide, false);
+					DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
+					window.addEventListener('resize', removeExpandSlide, false);
 				}
 
 
 				//console.log(transitionEnd);
 				$scope.video.addEventListener('canplay', initSlide, false);
-				//DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
+				
+
 
 
 

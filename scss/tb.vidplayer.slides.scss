@@ -5,21 +5,22 @@
 
 	z-index: 2;
 	background-color: transparent;
-	@include vendor-prefix('transition-duration', '3s');
 
-	&.temp-position{
-		
-	}
-
-	&.expanded{
-		left: 50%;
-		top: 50%;
-		@include vendor-prefix('transform', 'translate(-50%, -50%) scale(1.44)');
-
-	}
+	@include vendor-prefix('transform-origin', '0 0 0');
+	@include vendor-prefix('transition-duration', '0.3s');
 
 	> img{
 		width: 100%;
 		vertical-align: bottom;
+	}
+}
+
+.video-slide-clone{
+	display: none;
+	position: absolute;
+	z-index: 5;
+
+	&.visible{
+		display: inline;
 	}
 }
