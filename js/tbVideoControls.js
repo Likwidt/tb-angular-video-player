@@ -59,6 +59,7 @@
 
 				function bindSliderNode(e) {
 					e.stopPropagation();
+					e.preventDefault();
 
 					//stop updating time indices in the view
 					DOM.video.removeEventListener('timeupdate', updateTimeCounters);
@@ -78,6 +79,7 @@
 
 				function unbindSliderNode(e) {
 					e.stopPropagation();
+					e.preventDefault();
 
 					DOM.video.currentTime = tempVideoTime;
 
@@ -104,6 +106,7 @@
 					var timeLeft;
 
 					e.stopPropagation();
+					e.preventDefault();
 
 					if (diff <= 0) { //too left
 						tempVideoTime = 0;
@@ -118,13 +121,17 @@
 					setTimeCounters(tempVideoTime, timeLeft);
 				}
 
-				function back30(){
+				function back30(e){
 					var currentTime = DOM.video.currentTime;
+
+					e.preventDefault();
 
 					DOM.video.currentTime = currentTime >= OPTIONS.skipTime ? (currentTime - OPTIONS.skipTime) : 0;
 				}
 
-				function fw30(){
+				function fw30(e){
+					e.preventDefault();
+
 					if (DOM.video.currentTime < ($scope.STATES.duration - OPTIONS.skipTime)){
 						DOM.video.currentTime += OPTIONS.skipTime;
 					} else {
@@ -133,7 +140,9 @@
 					}
 				}
 
-				function playButtonHandler (){
+				function playButtonHandler (e){
+					e.preventDefault();
+
 					$scope.$apply(function() {
 						if (!DOM.video.paused){
 							DOM.video.pause();

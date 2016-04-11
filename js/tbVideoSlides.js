@@ -12,7 +12,7 @@
 			template: '<div class="video-slide-thumb tb-slide-position" ng-class="{\'expanded\' : STATES.thumbExpanded}"><img src="img/slides/sm/Slide004.jpg" /></div>',
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {
 				var DOM = {}; 
-				var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
+				//var transitionEnd = tbVideoPlayerCtrl.whichTransitionEvent();
 
 				DOM.slideContainer = $element[0];
 				DOM.video = $scope.video;
@@ -37,7 +37,8 @@
 				}
 
 
-				function toggleClone(){
+				function toggleClone(e){
+					e.preventDefault();
 					var transform = !$scope.STATES.thumbExpanded ? calculateTransforms() : null;
 
 					$scope.$apply(function() {
@@ -55,9 +56,9 @@
 				}
 
 
-				console.log(transitionEnd);
+				//console.log(transitionEnd);
 				$scope.video.addEventListener('canplay', initSlide, false);
-				DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
+				//DOM.slideContainer.addEventListener(transitionEnd, swapScalesImageWithFullSize, false);
 
 
 
