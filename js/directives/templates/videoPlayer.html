@@ -4,7 +4,7 @@
 	</div -->
 	<tb-video-slide ng-if="STATES.hasSlides"></tb-video-slide>
 	<tb-video-controls ng-if="STATES.hasControls"></tb-video-controls>
-	<video data-name="{{ data.keyword | trustUrl }}" autoplay>
+	<video autoplay>
 		<source ng-src="{{ src | trustUrl }}" type="video/mp4" >
 	</video>
 	<img class="video-slide-clone" ng-src="{{ STATES.currentSlideImgSrc }}" ng-if="STATES.hasSlides" />

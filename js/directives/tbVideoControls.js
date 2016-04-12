@@ -9,7 +9,7 @@
 			restrict: 'E',
 			replace: true,
 			require: '^tbVideoPlayer',
-			templateUrl: 'views/videoControls.html',
+			templateUrl: 'js/directives/templates/videoControls.html',
 			link: function($scope, $element, $attrs, tbVideoPlayerCtrl) {	
 				var DOM = {};
 				var OPTIONS = {};

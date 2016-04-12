@@ -1,4 +1,4 @@
-var dirs = ['js', 'libs', 'images', 'css', 'views'],
+var dirs = ['', 'views', 'img'],
 	port = 5555,
 	express = require('express'),
 	app = express();

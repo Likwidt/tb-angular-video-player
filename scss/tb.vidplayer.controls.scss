@@ -6,6 +6,7 @@
 	z-index: 1;
 	bottom:0.5em;
 	left:0.5em;
+	color: white;
 
 	*{
 		-webkit-user-select: none;
@@ -17,22 +18,21 @@
 	> div{
 		display: inline-block;
 		vertical-align: middle;
-		opacity: 0.5;
 		margin-right: 5px;
+		opacity: 0.5;
 
-		&:active{
+		&:hover{
 			opacity: 1;
 		}
 
 		&.progressIndicator{
+			font-family: Arial;
+
 
 			> div{
 				display: inline-block;
 				vertical-align: middle;
-
-				font-family: Arial;
 				padding: 0 0.5em;
-				color: rgba(255,255,255,0.8);
 			}
 
 			.slider{
@@ -69,10 +69,10 @@
 			display: inline-block;
 
 
-			&.play{ content: url(../img/pausebutton.png); }
-			&.pause{ content: url(../img/playbutton.png); }
-			&.back30 { content: url(../img/30secsback.png); }
-			&.fw30{	content: url(../img/30secsfw.png); }
+			&.play{ content: url(./img/pausebutton.png); }
+			&.pause{ content: url(./img/playbutton.png); }
+			&.back30 { content: url(./img/30secsback.png); }
+			&.fw30{	content: url(./img/30secsfw.png); }
 		}
 	}
 }

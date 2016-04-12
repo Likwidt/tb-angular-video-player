@@ -1,7 +1,7 @@
 (function(){
 	"use strict";
 
-	angular .module('tb-video-player', [])
+	angular .module('tb-video-player', ['tb-video-player.templates'])
 			.controller('TbVideoPlayerCtrl', [TbVideoPlayerCtrl])
 			.directive('tbVideoPlayer', [tbVideoPlayer])
 			.filter("trustUrl", ['$sce', function ($sce) {
@@ -9,8 +9,6 @@
 		            return $sce.trustAsResourceUrl(recordingUrl);
 		        };
 	    	}]);
-
-	
 
 	function TbVideoPlayerCtrl() {
 		var ctrl = this;
@@ -78,11 +76,11 @@
 			scope: {
 				data: '=',
 				slides: '=',
-				src: '@',
+				src: '=',
 				videoEnd: '&'
 			},
 			controller: 'TbVideoPlayerCtrl',
-			templateUrl: 'views/videoPlayer.html',
+			templateUrl: 'js/directives/templates/videoPlayer.html',
 			link: function($scope, $element, $attrs) {
 				$scope.master = $element[0];
 				$scope.video =  $scope.master.querySelector('video');

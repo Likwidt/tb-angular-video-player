@@ -9,7 +9,7 @@
 			restrict: 'E',
 			replace: true,
 			require: '^tbVideoPlayer',
-			templateUrl: 'views/videoSlides.html',
+			templateUrl: 'js/directives/templates/videoSlides.html',
 			link: function($scope, $element, $attrs, TbVideoPlayerCtrl) {
 				var DOM = {}; 
 				var transitionEndEvent = TbVideoPlayerCtrl.whichTransitionEvent();
@@ -21,8 +21,6 @@
 				DOM.slideContainer = $element[0];
 				DOM.master = $scope.master;
 				DOM.video = $scope.video;
-				DOM.slideImage = DOM.slideContainer.querySelector('img');
-				DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
 
 				function calculateScaleVars() {
 					scaleVars = {
@@ -129,6 +127,8 @@
 
 				function initSlide() {
 					calculateScaleVars();
+					DOM.slideImage = DOM.slideContainer.querySelector('img');
+					DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
 
 					DOM.video.addEventListener('timeupdate', slideShow, false);
 					DOM.slideContainer.addEventListener('mousedown', expandSlide, false);

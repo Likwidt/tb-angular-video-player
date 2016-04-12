@@ -12,6 +12,8 @@
     "gulp-inject": "^4.0.0",
     "gulp-jshint": "^2.0.0",
     "gulp-jslint": "^0.2.2",
+    "gulp-minify-html": "^1.0.6",
+    "gulp-ng-html2js": "^0.2.2",
     "gulp-open": "^1.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.2.0",
