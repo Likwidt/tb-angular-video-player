@@ -2,7 +2,7 @@
 	"use strict";
 
 	angular .module('tb-video-player')
-			.directive('tbVideoControls', [tbVideoControls])
+			.directive('tbVideoControls', [tbVideoControls]);
 
 	function tbVideoControls() {
 		return {
@@ -30,8 +30,6 @@
 				OPTIONS.skipTime = 30;
 
 				$scope.STATES.isPlaying = false;
-				$scope.STATES.timeIn;
-				$scope.STATES.timeLeft;
 
 				function initControls(e) {
 					sliderBounds = DOM.slider.getBoundingClientRect();
@@ -102,7 +100,7 @@
 
 				function sliderMove (e) {
 					var event = e.type === 'touchmove' ? e.touches[0] : e;
-					var diff = event.pageX - sliderBounds.left
+					var diff = event.pageX - sliderBounds.left;
 					var timeLeft;
 
 					e.stopPropagation();
@@ -156,7 +154,7 @@
 				}
 
 				DOM.video.addEventListener('canplay', initControls, false);
-				DOM.video.addEventListener('timeupdate', updateTimeCounters, false)
+				DOM.video.addEventListener('timeupdate', updateTimeCounters, false);
 
 				DOM.forwardButton.addEventListener('mousedown', fw30, false);
 				DOM.backButton.addEventListener('mousedown', back30, false);

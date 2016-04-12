@@ -7,10 +7,11 @@
 		//$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|skype|tel):/);
 
 		// For any unmatched url, redirect to /home
-  		$urlRouterProvider.otherwise("/home");
+  		$urlRouterProvider.otherwise("/");
 
   		$stateProvider
-  			.state('home', { url: "/home", templateUrl: "views/home.html" });
+  			.state('home', { url: "/", templateUrl: "views/home.html" })
+  			.state('done', { url: "/done", templateUrl: "views/done.html" });
 
 	}
 

@@ -2,7 +2,7 @@
 	"use strict";
 
 	angular .module('tb-video-player', [])
-			.controller('tbVideoPlayerCtrl', [tbVideoPlayerCtrl])
+			.controller('TbVideoPlayerCtrl', [TbVideoPlayerCtrl])
 			.directive('tbVideoPlayer', [tbVideoPlayer])
 			.filter("trustUrl", ['$sce', function ($sce) {
 		        return function (recordingUrl) {
@@ -12,7 +12,7 @@
 
 	
 
-	function tbVideoPlayerCtrl() {
+	function TbVideoPlayerCtrl() {
 		var ctrl = this;
 
 		function pad3(num){
@@ -55,7 +55,7 @@
 		      'OTransition':'oTransitionEnd',
 		      'MozTransition':'transitionend',
 		      'WebkitTransition':'webkitTransitionEnd'
-		    }
+		    };
 
 		    for(t in transitions){
 		        if( el.style[t] !== undefined ){
@@ -80,7 +80,7 @@
 				slides: '=',
 				src: '@'
 			},
-			controller: 'tbVideoPlayerCtrl',
+			controller: 'TbVideoPlayerCtrl',
 			templateUrl: 'views/videoPlayer.html',
 			link: function($scope, $element, $attrs) {
 				$scope.master = $element[0];
@@ -88,7 +88,7 @@
 
 				$scope.STATES = {};
 				$scope.STATES.hasControls = typeof $attrs.controls !== 'undefined';
-				$scope.STATES.hasSlides = typeof $scope.slides !== 'undefined' && !!$scope.slides.length;
+				$scope.STATES.hasSlides = typeof $scope.slides !== 'undefined' && !!$scope.slides.length && checkIfSlidesHaveGoodStructure();
 
 				function initVideo() {
 					$scope.STATES.duration = Math.ceil($scope.video.duration);
@@ -96,6 +96,26 @@
 					$scope.$apply(function() {
 						$scope.STATES.isPlaying = !$scope.video.paused;
 					});
+				}
+
+				function checkIfSlidesHaveGoodStructure() {
+					var slideIndex = $scope.slides.length - 1;
+
+					while (slideIndex--) {
+						if (!$scope.slides[slideIndex].hasOwnProperty('timeIndex')) {
+							console.error('Slides are missing property: "timeIndex"');
+							$scope.STATES.hasSlides = false;
+							return false;
+						}
+
+						if (!$scope.slides[slideIndex].hasOwnProperty('slideUrl')) {
+							console.error('Slides are missing property: "slideUrl"');
+							$scope.STATES.hasSlides = false;
+							return false;
+						}
+					} 
+
+					return true;
 				}
 
 				$scope.video.addEventListener('canplay', initVideo, false);
