@@ -6,6 +6,10 @@
 	function MainCtrl(){
 		var MainCtrl = this;
 
+		var temp = [];
+		var i;
+		var slideInd;
+
 		MainCtrl.videoObject = [
 			{keyword: 'welcome-and-intoductions', videoFileName: 'vids/Intro.mp4', position: {x: 85.5, y: 171, w: 348}, entry: null, timeIndexes: [0, 13.5, 35.5, 85.5, 105, 118.5, 126.5, 145.5, 186.5, 99999], firstSlide: 1},
 			{keyword: 'current-management', videoFileName: 'vids/Daskalopoulou.mp4', position: {x: 86.5, y: 311, w: 357}, entry: null, timeIndexes: [0, 88.5, 104.5, 111.5, 128.5, 160.1, 177.6, 212.6, 229.5, 249.5, 280, 312.5, 324.5, 373.5, 396, 448.8, 479, 497.2, 546.3, 577, 616.5, 681, 725, 795, 838.5, 859.6, 99999], firstSlide: 10},
@@ -15,8 +19,17 @@
 			{keyword: 'concluding-remarks', videoFileName: 'vids/Questions.mp4', position: {x: 546.5, y: 476.5, w: 353.5}, entry: null, timeIndexes: [], firstSlide: 1}
 		];
 
-		MainCtrl.testObj = {keyword: 'welcome-and-intoductions', videoFileName: 'vids/Intro.mp4', position: {x: 85.5, y: 171, w: 348}, entry: null, timeIndexes: [0, 13.5, 35.5, 85.5, 105, 118.5, 126.5, 145.5, 186.5, 99999], firstSlide: 1};
+		MainCtrl.testObj = {keyword: 'welcome-and-intoductions', videoFileName: 'vids/Intro.mp4', position: {x: 85.5, y: 171, w: 348}, entry: null, slides: [0, 13.5, 35.5, 85.5, 105, 118.5, 126.5, 145.5, 186.5, 99999], firstSlide: 1};
 
+		// terrible example because I'm lazy and don't feel like typing stuff
+		for (i in MainCtrl.videoObject[0].timeIndexes) {
+			slideInd = parseInt(i)+1;
+			temp.push({ timeIndex: MainCtrl.videoObject[0].timeIndexes[i], slideUrl: 'img/slides/lg/Slide00' + slideInd + '.jpg' });
+		}
+
+		//console.log(temp);
+
+		MainCtrl.slides = temp;
 	}
 
 	angular	.module('app')

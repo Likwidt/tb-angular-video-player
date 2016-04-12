@@ -88,7 +88,7 @@
 
 				$scope.STATES = {};
 				$scope.STATES.hasControls = typeof $attrs.controls !== 'undefined';
-				$scope.STATES.hasSlides = typeof $attrs.slides !== 'undefined' && !!$scope.slides.length;
+				$scope.STATES.hasSlides = typeof $scope.slides !== 'undefined' && !!$scope.slides.length;
 
 				function initVideo() {
 					$scope.STATES.duration = Math.ceil($scope.video.duration);

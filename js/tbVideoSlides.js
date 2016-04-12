@@ -23,8 +23,6 @@
 				DOM.slideImage = DOM.slideContainer.querySelector('img');
 				DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
 
-
-				
 				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
 
 				function calculateScaleVars() {
@@ -98,14 +96,32 @@
 					thumbExpanded = false;
 				}
 
+				function checkIfSlidesHaveGoodStructure() {
+					var i;
+
+					for (i in $scope.slides) {
+						if (!$scope.slides[i].hasOwnProperty('timeIndex')) {
+							console.error('Slides are missing property: "timeIndex"');
+							$scope.STATES.hasSlides = false;
+							return;
+						} else if (!$scope.slides[i].hasOwnProperty('slideUrl')) {
+							console.error('Slides are missing property: "slideUrl"');
+							$scope.STATES.hasSlides = false;
+							return;
+						}
+					} 
+				}
+
 				function initSlide() {
+					calculateScaleVars();
+					checkIfSlidesHaveGoodStructure();
+
 					DOM.slideContainer.addEventListener('mousedown', expandSlide, false);
 					DOM.slideContainer.addEventListener('touchstart', expandSlide, false);
 					DOM.slideClone.addEventListener('mousedown', removeExpandSlide, false);
 					DOM.slideClone.addEventListener('touchstart', removeExpandSlide, false);
 					DOM.slideContainer.addEventListener(transitionEndEvent, swapScalesImageWithFullSize, false);
 					window.addEventListener('resize', slideResizeHandler, false);
-					calculateScaleVars();
 				}
 
 				$scope.video.addEventListener('canplay', initSlide, false);
