@@ -3,9 +3,6 @@
 
 	function MainCtrl($state){
 		var MainCtrl = this;
-		var temp = [];
-		var i;
-		var slideInd;
 		var slides = [
 			{ timeIndex: 5, slideUrl: 'http://image.shutterstock.com/z/stock-photo-iceberg-lake-glacier-national-park-mt-291963866.jpg' },
 			{ timeIndex: 15, slideUrl: 'http://image.shutterstock.com/z/stock-photo-hidden-lake-trail-logan-pass-glacier-national-park-montana-united-states-291963893.jpg' },
