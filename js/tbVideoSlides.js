@@ -14,6 +14,7 @@
 				var DOM = {}; 
 				var transitionEndEvent = tbVideoPlayerCtrl.whichTransitionEvent();
 				var browserTransform = tbVideoPlayerCtrl.browserTransform();
+				var thumbExpanded = false;
 				var scaleVars;
 
 				DOM.slideContainer = $element[0];
@@ -23,11 +24,12 @@
 				DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
 
 
-				$scope.STATES.thumbExpanded = false;
+				
 				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
 
 				function calculateScaleVars() {
-					return {
+					console.log('resetting vars');
+					scaleVars = {
 						videoDimensions: { 
 							bounds: DOM.video.getBoundingClientRect() 
 						},
@@ -36,26 +38,31 @@
 							offsetLeft: DOM.slideContainer.offsetLeft,
 							offsetTop: DOM.slideContainer.offsetTop
 						},
-						fullSizeSlide: null
+						fullSizeSlide: null,
+						needsResize: false
 					};
 				}
 
 				function slideResizeHandler(e) {
-					scaleVars = calculateScaleVars();
+					scaleVars.needsResize = true;
+					if (!thumbExpanded) { calculateScaleVars(); }
 					removeExpandSlide(e);
 				}
 
-				function swapScalesImageWithFullSize(e) {
-					if ($scope.STATES.thumbExpanded) {	
+				function swapScalesImageWithFullSize() {
+					if (thumbExpanded) {	
 						if (scaleVars.fullSizeSlide === null) {
 							scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect()
 						}
+						console.log('swapping');
 
 						DOM.slideClone.style.top = scaleVars.fullSizeSlide.top - DOM.master.offsetTop + 'px';
 						DOM.slideClone.style.left = scaleVars.fullSizeSlide.left - DOM.master.offsetLeft + 'px'; 
 						DOM.slideClone.style.width = scaleVars.fullSizeSlide.width + 'px'; 
 						DOM.slideClone.style.height = scaleVars.fullSizeSlide.height + 'px'; 
 						DOM.slideClone.classList.add('visible');
+					} else if (scaleVars.needsResize === true) {
+						calculateScaleVars();
 					}
 				}
 
@@ -75,7 +82,7 @@
 
 					DOM.slideContainer.style[browserTransform] = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale + ')';
 
-					$scope.STATES.thumbExpanded = true;
+					thumbExpanded = true;
 				}
 
 				function removeExpandSlide(e) {
@@ -84,7 +91,7 @@
 					DOM.slideContainer.style[browserTransform] = null;
 					DOM.slideClone.classList.remove('visible');
 
-					$scope.STATES.thumbExpanded = false;
+					thumbExpanded = false;
 				}
 
 				function initSlide() {
@@ -94,7 +101,7 @@
 					DOM.slideClone.addEventListener('touchstart', removeExpandSlide, false);
 					DOM.slideContainer.addEventListener(transitionEndEvent, swapScalesImageWithFullSize, false);
 					window.addEventListener('resize', slideResizeHandler, false);
-					scaleVars = calculateScaleVars();
+					calculateScaleVars();
 				}
 
 				$scope.video.addEventListener('canplay', initSlide, false);
