@@ -28,7 +28,6 @@
 				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
 
 				function calculateScaleVars() {
-					console.log('resetting vars');
 					scaleVars = {
 						videoDimensions: { 
 							bounds: DOM.video.getBoundingClientRect() 
@@ -39,13 +38,16 @@
 							offsetTop: DOM.slideContainer.offsetTop
 						},
 						fullSizeSlide: null,
+						scale: null,
 						needsResize: false
 					};
 				}
 
 				function slideResizeHandler(e) {
 					scaleVars.needsResize = true;
-					if (!thumbExpanded) { calculateScaleVars(); }
+					if (!thumbExpanded) { 
+						calculateScaleVars(); 
+					}
 					removeExpandSlide(e);
 				}
 
@@ -54,7 +56,6 @@
 						if (scaleVars.fullSizeSlide === null) {
 							scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect()
 						}
-						console.log('swapping');
 
 						DOM.slideClone.style.top = scaleVars.fullSizeSlide.top - DOM.master.offsetTop + 'px';
 						DOM.slideClone.style.left = scaleVars.fullSizeSlide.left - DOM.master.offsetLeft + 'px'; 
@@ -74,13 +75,16 @@
 				}
 
 				function expandSlide(e) {
-					var scale = calculateScale();
-					var xTransform = -1*((scaleVars.slideDimensions.offsetLeft - (scaleVars.videoDimensions.bounds.width - scaleVars.slideDimensions.bounds.width*scale)/2)) + 'px';
+					if (scaleVars.scale === null) {
+						scaleVars.scale = calculateScale();
+					}
+
+					var xTransform = -1*((scaleVars.slideDimensions.offsetLeft - (scaleVars.videoDimensions.bounds.width - scaleVars.slideDimensions.bounds.width*scaleVars.scale)/2)) + 'px';
 					var yTransform = -1*scaleVars.slideDimensions.offsetTop + 'px';
 
 					e.preventDefault();		
 
-					DOM.slideContainer.style[browserTransform] = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scale + ')';
+					DOM.slideContainer.style[browserTransform] = 'translate(' + xTransform + ', ' + yTransform + ') scale(' + scaleVars.scale + ')';
 
 					thumbExpanded = true;
 				}
