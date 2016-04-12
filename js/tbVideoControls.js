@@ -15,12 +15,14 @@
 				var OPTIONS = {};
 				var tempVideoTime;
 				var sliderBounds;
+				var nodeWidth;
+				var duration;
 				
 				DOM.controls = $element[0];
 				DOM.video = $scope.video;
 				DOM.forwardButton = DOM.controls.querySelector('.fw30');
 				DOM.backButton = DOM.controls.querySelector('.back30');
-				DOM.slider = DOM.controls.querySelector('.slider > img');
+				DOM.slider = DOM.controls.querySelector('.slider');
 				DOM.node = DOM.controls.querySelector('.node');
 				DOM.playPause = DOM.controls.querySelector('.playPause');
 				DOM.timeIn = DOM.controls.querySelector('.timeIn');
@@ -29,23 +31,24 @@
 				
 				OPTIONS.skipTime = 30;
 
-				$scope.STATES.isPlaying = false;
-
 				function initControls(e) {
+					duration = DOM.video.duration;
 					sliderBounds = DOM.slider.getBoundingClientRect();
+					$scope.STATES.isPlaying = !DOM.video.paused;	
+					nodeWidth = DOM.node.offsetWidth;
 
-					updateTimeCounters(e);
+					updateTimeCounters();
 				}
 
 				function updateTimeCounters() {
 					var currentTime = DOM.video.currentTime;
-					var timeLeft = $scope.STATES.duration - currentTime;
+					var timeLeft = duration - currentTime;
 
 					setTimeCounters(currentTime, timeLeft);	
 				}
 
 				function setTimeCounters(currentTime, timeLeft) {
-					var sliderPosition = currentTime * sliderBounds.width / $scope.STATES.duration;
+					var sliderPosition = (currentTime * sliderBounds.width / duration) - nodeWidth/2;
 
 					DOM.node.style.left = [sliderPosition, 'px'].join('');
 
@@ -56,8 +59,9 @@
 				}
 
 				function bindSliderNode(e) {
-					e.stopPropagation();
 					e.preventDefault();
+
+					sliderBounds = DOM.slider.getBoundingClientRect();
 
 					//stop updating time indices in the view
 					DOM.video.removeEventListener('timeupdate', updateTimeCounters);
@@ -103,18 +107,17 @@
 					var diff = event.pageX - sliderBounds.left;
 					var timeLeft;
 
-					e.stopPropagation();
 					e.preventDefault();
 
 					if (diff <= 0) { //too left
 						tempVideoTime = 0;
 					} else if (diff >= sliderBounds.width) { // too right
-						tempVideoTime = $scope.STATES.duration;
+						tempVideoTime = duration;
 					} else { // ok
-						tempVideoTime = ($scope.STATES.duration * diff) / sliderBounds.width;
+						tempVideoTime = (duration * diff) / sliderBounds.width;
 					}
 
-					timeLeft = $scope.STATES.duration - tempVideoTime;
+					timeLeft = duration - tempVideoTime;
 
 					setTimeCounters(tempVideoTime, timeLeft);
 				}
@@ -130,11 +133,11 @@
 				function fw30(e){
 					e.preventDefault();
 
-					if (DOM.video.currentTime < ($scope.STATES.duration - OPTIONS.skipTime)){
+					if (DOM.video.currentTime < (duration - OPTIONS.skipTime)){
 						DOM.video.currentTime += OPTIONS.skipTime;
 					} else {
 						DOM.video.pause();
-						DOM.video.currentTime = $scope.STATES.duration;
+						DOM.video.currentTime = duration;
 					}
 				}
 

@@ -92,12 +92,6 @@
 				$scope.STATES.hasSlides = typeof $scope.slides !== 'undefined' && !!$scope.slides.length && checkIfSlidesHaveGoodStructure();
 
 				function initVideo() {
-					$scope.STATES.duration = Math.ceil($scope.video.duration);
-
-					$scope.$apply(function() {
-						$scope.STATES.isPlaying = !$scope.video.paused;
-					});
-
 					if (typeof $scope.videoEnd === 'function') {
 						$scope.video.addEventListener('ended', $scope.videoEnd, false);
 					}
@@ -108,14 +102,14 @@
 
 					while (slideIndex--) {
 						if (!$scope.slides[slideIndex].hasOwnProperty('timeIndex')) {
-							console.error('Slides are missing property: "timeIndex"');
 							$scope.STATES.hasSlides = false;
+							console.error('Object used in "slides" attribute is missing property: "timeIndex"');
 							return false;
 						}
 
 						if (!$scope.slides[slideIndex].hasOwnProperty('slideUrl')) {
-							console.error('Slides are missing property: "slideUrl"');
 							$scope.STATES.hasSlides = false;
+							console.error('Object used in "slides" attribute is missing property: "slideUrl"');
 							return false;
 						}
 					} 

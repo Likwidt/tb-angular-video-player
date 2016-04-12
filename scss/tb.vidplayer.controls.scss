@@ -1,25 +1,22 @@
 @import 'mixins';
 
 .controls {
-	display:table;
+	font-size: 1.5em;
 	position: absolute;
 	z-index: 1;
-	bottom:10px;
-	left:10px;
+	bottom:0.5em;
+	left:0.5em;
 
 	*{
-		-webkit-user-select: none;  /* Chrome all / Safari all */
-		-moz-user-select: none;     /* Firefox all */
-		-ms-user-select: none;      /* IE 10+ */
+		-webkit-user-select: none;
+		-moz-user-select: none;     
+		-ms-user-select: none;     
 		user-select: none;   
 	}
 
 	> div{
-		display:table-cell;
-		width:70px;
-		height: 50px;
-		background-size: contain;
-		background-repeat: no-repeat;
+		display: inline-block;
+		vertical-align: middle;
 		opacity: 0.5;
 		margin-right: 5px;
 
@@ -28,41 +25,39 @@
 		}
 
 		&.progressIndicator{
-			display: table;
 
 			> div{
-				font-family: Arial;
-				min-width: 56px;
-				padding: 0 10px;
-				display: table-cell;
+				display: inline-block;
 				vertical-align: middle;
-				font-size: 22px;
+
+				font-family: Arial;
+				padding: 0 0.5em;
 				color: rgba(255,255,255,0.8);
 			}
 
 			.slider{
 				position: relative;
-				padding-bottom: 14px;
+				width: 5em;
+				height: 0.1em;
+				background-color: white;
+				content: " ";
 			}
 
 			.node{
 				position: absolute;
+				top:0;
 				left:0;
 				border-radius: 50%;
 				background-color: white;
-				width: 20px;
-				height: 20px;
-				top: 13px;
+				width: 1em;
+				height: 1em;
+				transform: translateY(-50%);
 
 				&:after{
 					cursor: pointer;
 					position: absolute;
 					border-radius: 50%;
 					background-color: transparent;
-					width: 60px;
-					height: 60px;
-					left: -100%;
-					top: -100%;
 					content: " ";   
 				}
 			}
@@ -70,11 +65,14 @@
 
 		&.tb-vid_btn{
 			cursor: pointer;
+			max-width: 2.5em;
+			display: inline-block;
 
-			&.play{ background-image: url(../img/pausebutton.png); }
-			&.pause{ background-image: url(../img/playbutton.png); }
-			&.back30 { background-image: url(../img/30secsback.png); }
-			&.fw30{	background-image: url(../img/30secsfw.png); }
+
+			&.play{ content: url(../img/pausebutton.png); }
+			&.pause{ content: url(../img/playbutton.png); }
+			&.back30 { content: url(../img/30secsback.png); }
+			&.fw30{	content: url(../img/30secsfw.png); }
 		}
 	}
 }
