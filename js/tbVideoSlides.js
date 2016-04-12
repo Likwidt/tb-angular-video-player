@@ -15,6 +15,7 @@
 				var transitionEndEvent = tbVideoPlayerCtrl.whichTransitionEvent();
 				var browserTransform = tbVideoPlayerCtrl.browserTransform();
 				var thumbExpanded = false;
+				var numberOfSlides = $scope.slides.length; 
 				var scaleVars;
 
 				DOM.slideContainer = $element[0];
@@ -22,8 +23,6 @@
 				DOM.video = $scope.video;
 				DOM.slideImage = DOM.slideContainer.querySelector('img');
 				DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
-
-				$scope.STATES.currentSlideImgSrc = "img/slides/lg/Slide004.jpg";
 
 				function calculateScaleVars() {
 					scaleVars = {
@@ -37,6 +36,7 @@
 						},
 						fullSizeSlide: null,
 						scale: null,
+						pictureChanged: false,
 						needsResize: false
 					};
 				}
@@ -112,10 +112,40 @@
 					} 
 				}
 
+				function slideShow() {
+					var ct = Math.ceil(DOM.video.currentTime);
+					var checkIndex = numberOfSlides-1;
+					var fileLocation;
+
+					// need to recheck sizes if picture changed
+					if (scaleVars.pictureChanged === true && thumbExpanded === false) {
+						calculateScaleVars();
+					}
+
+					while (checkIndex--){
+						if (ct >= $scope.slides[checkIndex].timeIndex && ct < $scope.slides[checkIndex+1].timeIndex ) {
+							// found our index
+
+							fileLocation = $scope.slides[checkIndex].slideUrl;
+
+							// only change slide if slide needs changing
+							if ($scope.STATES.currentSlideImgSrc !== fileLocation){
+								$scope.$apply(function() {
+									$scope.STATES.currentSlideImgSrc = fileLocation;
+									scaleVars.pictureChanged = true;
+								});			
+							}
+
+							return;		
+						}		
+					}
+				}
+
 				function initSlide() {
 					calculateScaleVars();
 					checkIfSlidesHaveGoodStructure();
 
+					DOM.video.addEventListener('timeupdate', slideShow, false);
 					DOM.slideContainer.addEventListener('mousedown', expandSlide, false);
 					DOM.slideContainer.addEventListener('touchstart', expandSlide, false);
 					DOM.slideClone.addEventListener('mousedown', removeExpandSlide, false);
