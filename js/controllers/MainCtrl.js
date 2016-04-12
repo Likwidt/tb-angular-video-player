@@ -6,25 +6,22 @@
 		var temp = [];
 		var i;
 		var slideInd;
-
-
-
-		MainCtrl.videoObject = [
-			{keyword: 'welcome-and-intoductions', videoFileName: 'https://sta.thierryblais.com/Hypertension/Intro.mp4', position: {x: 85.5, y: 171, w: 348}, entry: null, timeIndexes: [0, 13.5, 35.5, 85.5, 105, 118.5, 126.5, 145.5, 186.5, 99999], firstSlide: 1}
+		var slides = [
+			{ timeIndex: 5, slideUrl: 'http://image.shutterstock.com/z/stock-photo-iceberg-lake-glacier-national-park-mt-291963866.jpg' },
+			{ timeIndex: 15, slideUrl: 'http://image.shutterstock.com/z/stock-photo-hidden-lake-trail-logan-pass-glacier-national-park-montana-united-states-291963893.jpg' },
+			{ timeIndex: 30, slideUrl: 'http://image.shutterstock.com/z/stock-photo-norway-mountain-landscape-with-famous-troll-road-trollstigen-rauma-municipality-in-romdal-93626320.jpg' },
+			{ timeIndex: 9999, slideUrl: '' }
 		];
 
-		// terrible example because I'm lazy and don't feel like typing stuff
-		for (i in MainCtrl.videoObject[0].timeIndexes) {
-			slideInd = parseInt(i)+1;
-			temp.push({ timeIndex: MainCtrl.videoObject[0].timeIndexes[i], slideUrl: 'img/slides/lg/Slide00' + slideInd + '.jpg' });
-		}
+
+
+		MainCtrl.videoObject = { videoFileName: 'http://ak9.picdn.net/shutterstock/videos/13977539/preview/stock-footage-aerial-austria-reutte-ruin-tyrol-austria.mp4', slides: slides };
 
 		MainCtrl.getOut = function() {
 			$state.go('done');
 
 		};
 
-		MainCtrl.slides = temp;
 	}
 
 	angular	.module('app')
