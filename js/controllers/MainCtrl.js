@@ -25,7 +25,9 @@
 		}
 
 		MainCtrl.getOut = function() {
+			console.log('ok');
 			$state.go('done');
+
 		};
 
 		MainCtrl.slides = temp;

@@ -78,7 +78,8 @@
 			scope: {
 				data: '=',
 				slides: '=',
-				src: '@'
+				src: '@',
+				videoEnd: '&'
 			},
 			controller: 'TbVideoPlayerCtrl',
 			templateUrl: 'views/videoPlayer.html',
@@ -96,6 +97,10 @@
 					$scope.$apply(function() {
 						$scope.STATES.isPlaying = !$scope.video.paused;
 					});
+
+					if (typeof $scope.videoEnd === 'function') {
+						$scope.video.addEventListener('ended', $scope.videoEnd, false);
+					}
 				}
 
 				function checkIfSlidesHaveGoodStructure() {
