@@ -139,7 +139,7 @@
 					window.addEventListener('resize', slideResizeHandler, false);
 				}
 
-				$scope.video.addEventListener('canplay', initSlide, false);
+				DOM.video.addEventListener('canplay', initSlide, false);
 			}
 		};
 	}
