@@ -22,33 +22,36 @@
 				DOM.master = $scope.master;
 				DOM.video = $scope.video;
 
-				function calculateScaleVars() {
+				function calculateSlideVars() {
+					console.log('resetting slidevars');
 					scaleVars = {
 						videoDimensions: { 
 							bounds: DOM.video.getBoundingClientRect() 
 						},
 						slideDimensions: { 
-							bounds: DOM.slideContainer.getBoundingClientRect(),
+							bounds: null,
 							offsetLeft: DOM.slideContainer.offsetLeft,
 							offsetTop: DOM.slideContainer.offsetTop
 						},
 						fullSizeSlide: null,
-						scale: null,
 						pictureChanged: false,
-						needsResize: false
+						needsResize: false,
+						canBeReset: true
 					};
 				}
 
 				function slideResizeHandler(e) {
 					scaleVars.needsResize = true;
 					if (!thumbExpanded) { 
-						calculateScaleVars(); 
+						calculateSlideVars(); 
 					}
 					removeExpandSlide(e);
 				}
 
 				function swapScalesImageWithFullSize() {
 					if (thumbExpanded) {	
+						scaleVars.canBeReset = false;
+
 						if (scaleVars.fullSizeSlide === null) {
 							scaleVars.fullSizeSlide = DOM.slideContainer.getBoundingClientRect();
 						}
@@ -57,13 +60,15 @@
 						DOM.slideClone.style.left = scaleVars.fullSizeSlide.left - DOM.master.offsetLeft + 'px'; 
 						DOM.slideClone.style.width = scaleVars.fullSizeSlide.width + 'px'; 
 						DOM.slideClone.style.height = scaleVars.fullSizeSlide.height + 'px'; 
-						DOM.slideClone.classList.add('visible');
-					} else if (scaleVars.needsResize === true) {
-						calculateScaleVars();
+						DOM.master.classList.add('slide-clone-visible');
+					} else if (!!scaleVars.pictureChanged || !!scaleVars.needsResize) {
+						scaleVars.canBeReset = true;
+						calculateSlideVars();
 					}
 				}
 
 				function calculateScale() {
+					scaleVars.slideDimensions.bounds = DOM.slideContainer.getBoundingClientRect();
 					var scaleX = scaleVars.videoDimensions.bounds.width / scaleVars.slideDimensions.bounds.width;
 					var scaleY = scaleVars.videoDimensions.bounds.height / scaleVars.slideDimensions.bounds.height;
 
@@ -71,10 +76,7 @@
 				}
 
 				function expandSlide(e) {
-					if (scaleVars.scale === null) {
-						scaleVars.scale = calculateScale();
-					}
-
+					scaleVars.scale = calculateScale();
 					var xTransform = -1*((scaleVars.slideDimensions.offsetLeft - (scaleVars.videoDimensions.bounds.width - scaleVars.slideDimensions.bounds.width*scaleVars.scale)/2)) + 'px';
 					var yTransform = -1*scaleVars.slideDimensions.offsetTop + 'px';
 
@@ -88,8 +90,9 @@
 				function removeExpandSlide(e) {
 					e.preventDefault();
 
+					
 					DOM.slideContainer.style[browserTransform] = null;
-					DOM.slideClone.classList.remove('visible');
+					DOM.master.classList.remove('slide-clone-visible');
 
 					thumbExpanded = false;
 				}
@@ -102,11 +105,15 @@
 					function changeSlideUrl() {
 						$scope.STATES.currentSlideImgSrc = fileLocation;
 						scaleVars.pictureChanged = true;
+						if (scaleVars.canBeReset = false) {
+							resizeAlreadyExpandedClone();
+						}
+						
 					}
 
 					// need to recheck sizes if picture changed
-					if (scaleVars.pictureChanged === true && thumbExpanded === false) {
-						calculateScaleVars();
+					if (scaleVars.pictureChanged === true && scaleVars.canBeReset === true ) {
+						calculateSlideVars();
 					}
 
 					while (checkIndex--){
@@ -125,8 +132,13 @@
 					}
 				}
 
+				function resizeAlreadyExpandedClone() {
+					scaleVars.fullSizeSlide === null;
+					swapScalesImageWithFullSize();
+				}
+				
 				function initSlide() {
-					calculateScaleVars();
+					calculateSlideVars();
 					DOM.slideImage = DOM.slideContainer.querySelector('img');
 					DOM.slideClone = DOM.master.querySelector('.video-slide-clone');
 

@@ -7,7 +7,7 @@
 	background-color: transparent;
 
 	@include vendor-prefix('transform-origin', '0 0 0');
-	@include vendor-prefix('transition-duration', '0.3s');
+	@include vendor-prefix('transition', 'all 0.3s ease, visibility 0ms');
 
 	> img{
 		width: 100%;
@@ -19,8 +19,17 @@
 	display: none;
 	position: absolute;
 	z-index: 5;
+}
 
-	&.visible{
-		display: inline;
+.tb-video_container{
+	&.slide-clone-visible{
+
+		.video-slide-thumb{
+			visibility: hidden;	
+		}
+
+		.video-slide-clone{
+			display: inline;
+		}
 	}
 }
