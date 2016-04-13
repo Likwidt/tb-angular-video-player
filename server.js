@@ -3,7 +3,7 @@ var dirs = ['', 'views', 'img'],
 	express = require('express'),
 	app = express();
 
-app.set('views', __dirname + '/');
+app.set('views',__dirname + '/dist');
 
 app.engine('html', require('ejs').renderFile);
 
@@ -13,7 +13,7 @@ app.get('/', function (req, res) {
 
 for (var i=0; i<dirs.length ; i++){
 	var dir = '/' + dirs[i];
-	app.use(dir, express.static(__dirname + dir));
+	app.use(dir, express.static(__dirname + '/dist'  + dir));
 }
 
 app.listen(port, function() {
