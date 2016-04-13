@@ -68,7 +68,7 @@ gulp.task('inject', function () {
 
 gulp.task('inject-dist', function() {
 
-  var min = gulp.src(['./dist/*.js', './dist/tbVideoPlayer.min.css', '!./dist/server.js'], {read: false});
+  var min = gulp.src(['./dist/*.js', './dist/*.css'], {read: false});
 
   return gulp .src('index.html')
               .pipe(inject(min,{ignorePath: 'dist/'}))
@@ -95,7 +95,7 @@ gulp.task('watch-js', function () {
 });
 
 gulp.task('clean-dist', function() {
-  return gulp .src(['dist/*.*', 'dist/**/*.*', '!dist/package.json', '!dist/server.js', '!dist/node_modules/**/*.*'])
+  return gulp .src(['dist/*.*', 'dist/**/*.*'])
               .pipe(clean({force: true}));
 });
 
@@ -115,7 +115,14 @@ gulp.task('minify-js', function () {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('minify-css', function () {
+gulp.task('copy-example-css', function() {
+  return gulp
+          .src(['scss/app.scss'])
+          .pipe(sass.sync().on('error', sass.logError))
+          .pipe(gulp.dest('dist'));
+});
+
+gulp.task('minify-css', ['copy-example-css'], function () {
   return gulp.src(sources.sass.concat(['!scss/app.scss']))
       .pipe(sass.sync().on('error', sass.logError))
       .pipe(concat('tbVideoPlayer.min.css'))
