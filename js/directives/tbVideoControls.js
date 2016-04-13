@@ -28,15 +28,17 @@
 				DOM.timeIn = DOM.controls.querySelector('.timeIn');
 				DOM.timeLeft = DOM.controls.querySelector('.timeLeft');
 				
+				function resetElementMeasurements() {
+					sliderBounds = DOM.slider.getBoundingClientRect();
+					nodeWidth = DOM.node.offsetWidth;
+				}
 				
 				OPTIONS.skipTime = 30;
 
 				function initControls(e) {
 					duration = DOM.video.duration;
-					sliderBounds = DOM.slider.getBoundingClientRect();
 					$scope.STATES.isPlaying = !DOM.video.paused;	
-					nodeWidth = DOM.node.offsetWidth;
-
+					resetElementMeasurements();
 					updateTimeCounters();
 				}
 
@@ -156,6 +158,8 @@
 					
 				}
 
+
+
 				DOM.video.addEventListener('canplay', initControls, false);
 				DOM.video.addEventListener('timeupdate', updateTimeCounters, false);
 
@@ -168,6 +172,8 @@
 				DOM.backButton.addEventListener('touchstart', back30, false);
 				DOM.playPause.addEventListener('touchstart', playButtonHandler, false);
 				DOM.node.addEventListener('touchstart', bindSliderNode, false);
+
+				window.addEventListener('resize', resetElementMeasurements, false)
 			}
 		};
 	}
