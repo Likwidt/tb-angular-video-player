@@ -51,6 +51,7 @@ node_modules/
 dist/*
 !dist/server.js
 !dist/package.json
+bower_components/
 css/
 vids/
 img/slides/
