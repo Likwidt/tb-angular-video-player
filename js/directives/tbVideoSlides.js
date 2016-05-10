@@ -74,6 +74,20 @@
 					return Math.min(scaleX, scaleY);
 				}
 
+				function changeSlideUrl(fileLocation) {
+
+					// only change slide if slide needs changing
+					if ($scope.STATES.currentSlideImgSrc !== fileLocation){
+						$scope.$apply(function () {
+							$scope.STATES.currentSlideImgSrc = fileLocation;
+							slideVars.pictureChanged = true;
+							if (slideVars.canBeReset = false) {
+								resizeAlreadyExpandedClone();
+							}
+						});			
+					}					
+				}
+
 				function expandSlide(e) {
 					slideVars.scale = calculateScale();
 					var xTransform = -1*((slideVars.slideDimensions.offsetLeft - (slideVars.videoDimensions.bounds.width - slideVars.slideDimensions.bounds.width*slideVars.scale)/2)) + 'px';
@@ -98,17 +112,7 @@
 
 				function slideShow() {
 					var ct = Math.ceil(DOM.video.currentTime);
-					var checkIndex = numberOfSlides-1;
-					var fileLocation;
-
-					function changeSlideUrl() {
-						$scope.STATES.currentSlideImgSrc = fileLocation;
-						slideVars.pictureChanged = true;
-						if (slideVars.canBeReset = false) {
-							resizeAlreadyExpandedClone();
-						}
-						
-					}
+					var checkIndex = numberOfSlides;
 
 					// need to recheck sizes if picture changed
 					if (slideVars.pictureChanged === true && slideVars.canBeReset === true ) {
@@ -116,16 +120,10 @@
 					}
 
 					while (checkIndex--){
-						if (ct >= $scope.slides[checkIndex].timeIndex && ct < $scope.slides[checkIndex+1].timeIndex ) {
+						if (ct >= $scope.slides[checkIndex].timeIndex) {
+							
 							// found our index
-
-							fileLocation = $scope.slides[checkIndex].slideUrl;
-
-							// only change slide if slide needs changing
-							if ($scope.STATES.currentSlideImgSrc !== fileLocation){
-								$scope.$apply(changeSlideUrl);			
-							}
-
+							changeSlideUrl($scope.slides[checkIndex].slideUrl);
 							return;		
 						}		
 					}
